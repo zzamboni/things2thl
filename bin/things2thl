@@ -1,0 +1,85 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+
+require File.join(File.dirname(__FILE__), *%w".. lib Things2THL")
+require "optparse"
+require "ostruct"
+
+# Command line options and defaults    
+options=OpenStruct.new
+options.completed = false
+options.database = nil
+options.structure = :projects_as_lists
+options.areas = true
+options.quiet = false
+options.dryrun = false
+opts = OptionParser.new do |opts|
+  opts.separator ''
+  opts.separator 'Options:'
+  
+  opts.banner = "Usage: things2thl [options]"
+  
+  def opts.show_usage
+    puts self
+    exit  
+  end
+  
+  opts.on("--projects-as-lists", "Convert projects in Things to lists in THL (default)") { options.structure = :projects_as_lists }
+  opts.on("--projects-as-tasks", "Convert projects in Things to tasks in THL") { options.structure = :projects_as_tasks }
+  opts.on("--no-areas", "Ignore areas in Things") { options.areas = false }
+
+  opts.on("-d FILENAME", "--database FILENAME", "Use the specified Things database") do |database|    
+    options.database = database
+  end
+  
+  opts.on("-c", "--completed", 'Transfer also completed/canceled tasks and projects (default: no)') { options.completed = true }
+  opts.on("-q", "--quiet", "Do not print items as they are processed") { options.quiet = true }
+  opts.on("-n", "--dry-run", "Do not create anything in THL, just print the items that would be created") { options.dryrun = true }
+#  opts.on("-n", "--notes", "Shows only tasks with notes") { options[:tasks] = { :onlynotes => true } }
+#  opts.on("-a", "--all", 'Shows all tasks in the focus') { |f| options[:tasks] = { :children => false } }
+
+  opts.on_tail("-h", "--help", "Shows this help message") { opts.show_usage }
+  opts.on_tail("-v", "--version", "Shows version") do
+    puts version
+    exit
+  end
+end
+
+######################################################################
+# Main program
+######################################################################
+
+opts.parse!
+#opts.show_usage unless options.key?(:focus)
+
+converter = Things2THL.new(options, options.database)
+things = converter.things
+thl = converter.thl
+
+# First traverse areas
+puts "Areas:"
+things.areas.each { |n| converter.traverse(n, 0, thl.folders_group.get) }
+# Then traverse area-less projects
+puts "\nProjects without an area:"
+parent = thl.folders_group.get
+if (options.structure == :projects_as_tasks)
+  parent = converter.find_or_create_list(parent, "Projects")
+end
+things.projects.each { |n| converter.traverse(n, 0, parent) unless n.parent_area? }
+# Then tasks without a project
+#puts "\nTasks without a project:"
+#things.focus(:next).children.each { |n| traverse(n, 0, options) unless n.parent? }
+
+#############
+
+# thl.folders_group.end.make(:new => :folder, :with_properties => {:name => 'test folder'})
+# app("/Applications/The Hit List.app").folders_group.folders.ID("1B98A3855A3C79DE").end.make(:new => :list, :with_properties => {:name => 'test list'})
+# task=app("/Applications/The Hit List.app").folders_group.folders.ID("1B98A3855A3C79DE").lists.ID("43B3187E6D90AB8D").end.make(:new => :task, :with_properties => {:title => 'test
+#  task', :notes => 'test notes' })
+# task.end.make(:new => :task, :with_properties => {:title => 'test subtask'})
+# task.set(:title => 'new title')
+# task.set(title => 'new title')
+# task.title = 'new title'
+# thl.set(task.title, :to => 'new title')
+# task.title.set('another title')
+# task.title.get
