@@ -28,21 +28,32 @@ opts = OptionParser.new do |opts|
   opts.on("--projects-as-tasks", "Convert projects in Things to tasks in THL") { options.structure = :projects_as_tasks }
   opts.on("--no-areas", "Ignore areas in Things") { options.areas = false }
 
-  opts.on("-d FILENAME", "--database FILENAME", "Use the specified Things database") do |database|    
-    options.database = database
+  opts.on("--top-level-folder FOLDER", "If specified, do the import inside the named folders, instead of the top level",
+          " (Inbox, etc. will also be created there instead of their corresponding places)") do |toplevel|
+    options.toplevel = toplevel
   end
-  
+
   opts.on("-c", "--completed", 'Transfer also completed/canceled tasks and projects (default: no)') { options.completed = true }
   opts.on("-q", "--quiet", "Do not print items as they are processed") { options.quiet = true }
   opts.on("-n", "--dry-run", "Do not create anything in THL, just print the items that would be created") { options.dryrun = true }
 #  opts.on("-n", "--notes", "Shows only tasks with notes") { options[:tasks] = { :onlynotes => true } }
 #  opts.on("-a", "--all", 'Shows all tasks in the focus') { |f| options[:tasks] = { :children => false } }
 
-  opts.on_tail("-h", "--help", "Shows this help message") { opts.show_usage }
-  opts.on_tail("-v", "--version", "Shows version") do
+  opts.on("-h", "--help", "Shows this help message") { opts.show_usage }
+  opts.on("-v", "--version", "Shows version") do
     puts version
     exit
   end
+
+  opts.separator("")
+  opts.separator("Options you should seldom need:")
+  opts.on("--things THINGSAPP", "Location of the Things application (default: /Applications/Things.app)") do |things|    
+    options.thingsapp = things
+  end
+  opts.on("--thl THLAPP", "Location of the The Hit List application (default: /Applications/The Hit List.app)") do |thl|
+    options.thlapp = thl
+  end
+  
 end
 
 ######################################################################
@@ -52,20 +63,41 @@ end
 opts.parse!
 #opts.show_usage unless options.key?(:focus)
 
-converter = Things2THL.new(options, options.database)
+converter = Things2THL.new(options, options.thingsapp, options.thlapp)
 things = converter.things
+puts things
 thl = converter.thl
+puts thl
 
-# First traverse areas
-puts "Areas:"
-things.areas.each { |n| converter.traverse(n, 0, thl.folders_group.get) }
-# Then traverse area-less projects
-puts "\nProjects without an area:"
-parent = thl.folders_group.get
-if (options.structure == :projects_as_tasks)
-  parent = converter.find_or_create_list(parent, "Projects")
+# Create top-level containers if needed
+
+# First, traverse all areas
+things.areas.get.each { |area| converter.process(Things2THL::ThingsNode.new(area)) } if options.areas
+
+# Next, traverse all projects, putting each one inside its corresponding area
+things.projects.get.each { |project| converter.process(Things2THL::ThingsNode.new(project)) }
+
+# Now do the tasks
+# This is more complicated because:
+# - to_dos returns not only tasks, also projects (not areas)
+# - to-dos returns tasks from all the views: Inbox, Scheduled, Someday, and Next, so we have
+#   to separate them and create the appropriate containers as needed
+things.to_dos.get.each do |t|
+  task=Things2THL::ThingsNode.new(t)
+  next if task.type != :selected_to_do
+  converter.process(task)
 end
-things.projects.each { |n| converter.traverse(n, 0, parent) unless n.parent_area? }
+
+# # First traverse areas
+# puts "Areas:"
+# things.areas.each { |n| converter.traverse(n, 0, thl.folders_group.get) }
+# # Then traverse area-less projects
+# puts "\nProjects without an area:"
+# parent = thl.folders_group.get
+# if (options.structure == :projects_as_tasks)
+#   parent = converter.find_or_create_list(parent, "Projects")
+# end
+# things.projects.each { |n| converter.traverse(n, 0, parent) unless n.parent_area? }
 # Then tasks without a project
 #puts "\nTasks without a project:"
 #things.focus(:next).children.each { |n| traverse(n, 0, options) unless n.parent? }
