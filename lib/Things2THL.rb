@@ -353,7 +353,11 @@ module Things2THL
             container=process(node.area)
           end
         else
-          container=top_level_node
+          if options.structure == :projects_as_tasks
+            container=find_or_create_list('Projects', top_level_node)
+          else
+            container=top_level_node
+          end
         end
       when :selected_to_do
         if node.project?
