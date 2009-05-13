@@ -30,8 +30,8 @@ module Things2THL
     #                 is value1, then :symbol1 prop in THL is set to true, etc.
     # postblock, if given, should be a code block that will receive
     #    the original node, the produced new properties hash and the
-    #    options object as parameters, and do any necessary
-    #    postprocessing on it.
+    #    Things2THL object as parameters, and do any necessary
+    #    postprocessing on the new properties
     STRUCTURES = {
       :projects_as_lists => { 
         :area => [:folder,
@@ -56,24 +56,10 @@ module Things2THL
                               },
                               :notes => :notes,
                             },
-                            Proc.new {|node,prop,options|
-                              # Things sets both 'completion_date' and 'cancellation_date'
-                              # for both completed and canceled tasks, which confuses THL
-                              if prop[:completed_date] && prop[:canceled_date]
-                                if prop[:canceled]
-                                  prop.delete(:completed)
-                                  prop.delete(:completed_date)
-                                else
-                                  prop.delete(:canceled)
-                                  prop.delete(:canceled_date)
-                                end
-                              end
-                              # Archive completed/canceled if requested
-                              prop[:archived] = true if options.archivecompleted && (prop[:completed] || prop[:canceled])
-                              # Add tags to title
-                              if node.tags?
-                                prop[:title] = [prop[:title], node.tags.map {|t| "/" + t.name + (t.name.index(" ")?"/":"") }].join(' ')
-                              end
+                            Proc.new {|node,prop,obj|
+                              obj.fix_completed_canceled(node, prop)
+                              obj.archive_completed(node, prop)
+                              obj.add_tags(node, prop)
                             }
                            ]
       },
@@ -95,24 +81,10 @@ module Things2THL
                        },
                        :notes => :notes,
                      },
-                     Proc.new {|node,prop,options|
-                       # Things sets both 'completed' and 'canceled' dates
-                       # for canceled tasks, which confuses THL
-                       if prop[:completed_date] && prop[:canceled_date]
-                         if prop[:canceled]
-                           prop.delete(:completed)
-                           prop.delete(:completed_date)
-                         else
-                           prop.delete(:canceled)
-                           prop.delete(:canceled_date)
-                         end
-                       end
-                       # Archive completed/canceled if requested
-                       prop[:archived] = true if options.archivecompleted && (prop[:completed] || prop[:canceled])
-                       # Add tags to title
-                       if node.tags?
-                         prop[:title] = [prop[:title], node.tags.map {|t| "/" + t.name + (t.name.index(" ")?"/":"") }].join(' ')
-                       end
+                     Proc.new {|node,prop,obj|
+                       obj.fix_completed_canceled(node, prop)
+                       obj.archive_completed(node, prop)
+                       obj.add_tags(node, prop)
                      }
                     ],
         :selected_to_do => [:task,
@@ -128,24 +100,10 @@ module Things2THL
                               },
                               :notes => :notes,
                             },
-                            Proc.new {|node,prop,options|
-                              # Things sets both 'completed' and 'canceled' dates
-                              # for canceled tasks, which confuses THL
-                              if prop[:completed_date] && prop[:canceled_date]
-                                if prop[:canceled]
-                                  prop.delete(:completed)
-                                  prop.delete(:completed_date)
-                                else
-                                  prop.delete(:canceled)
-                                  prop.delete(:canceled_date)
-                                end
-                              end
-                              # Archive completed/canceled if requested
-                              prop[:archived] = true if options.archivecompleted && (prop[:completed] || prop[:canceled])
-                              # Add tags to title
-                              if node.tags?
-                                prop[:title] = [prop[:title], node.tags.map {|t| "/" + t.name + (t.name.index(" ")?"/":"") }].join(' ')
-                              end
+                            Proc.new {|node,prop,obj|
+                              obj.fix_completed_canceled(node, prop)
+                              obj.archive_completed(node, prop)
+                              obj.add_tags(node, prop)
                             }
                            ]
       }
@@ -291,7 +249,7 @@ module Things2THL
       postproc=Constants::STRUCTURES[options.structure][node.type][2]
       if postproc
         puts "Calling post-processor #{postproc.to_s} with newprops=#{newprops.inspect}"
-        postproc.call(node,newprops, options)
+        postproc.call(node, newprops, self)
         puts "After post-processor: #{newprops.inspect}"
       end
       return newprops
@@ -463,6 +421,36 @@ module Things2THL
 
       unless (options.dryrun)
         newnode=create_in_thl(node, container)
+      end
+    end
+
+    ###-------------------------------------------------------------------
+    ### Methods to fix new nodes - called from the postproc block in STRUCTURES
+
+    # Things sets both 'completion_date' and 'cancellation_date'
+    # for both completed and canceled tasks, which confuses THL,
+    # so we delete the one that should not be there.
+    def fix_completed_canceled(node,prop)
+      if prop[:completed_date] && prop[:canceled_date]
+        if prop[:canceled]
+          prop.delete(:completed)
+          prop.delete(:completed_date)
+        else
+          prop.delete(:canceled)
+          prop.delete(:canceled_date)
+        end
+      end
+    end
+
+    # Archive completed/canceled if requested
+    def archive_completed(node, prop)
+      prop[:archived] = true if options.archivecompleted && (prop[:completed] || prop[:canceled])
+    end
+
+    # Add tags to title
+    def add_tags(node, prop)
+      if node.tags?
+        prop[:title] = [prop[:title], node.tags.map {|t| "/" + t.name + (t.name.index(" ")?"/":"") }].join(' ')
       end
     end
 
