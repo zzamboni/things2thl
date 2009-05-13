@@ -19,16 +19,136 @@ module Things2THL
 
   module Constants
     # Ways in which the items can be structured on the THL side.
-    # Elements are: <Things item> => <THL item>
+    # Elements are: <Things item> => [<THL item>, {prop mapping}, postblock],
+    # where {prop mapping} is a map containing <Things prop> => <THL prop>.
+    # <Things prop> is a symbol representing the name of a Node property.
+    # <THL prop> can be any of the following
+    #     :symbol   => value of <Things prop> is assigned to this prop
+    #     [:symbol, {hash}] => value of <Things prop> is looked up in {hash}
+    #                          and the corresponding value is assigned to :symbol
+    #     {value1 => :symbol1, value2 => :symbol2} => if value of <Things prop>
+    #                 is value1, then :symbol1 prop in THL is set to true, etc.
+    # postblock, if given, should be a code block that will receive
+    #    the original node, the produced new properties hash and the
+    #    options object as parameters, and do any necessary
+    #    postprocessing on it.
     STRUCTURES = {
       :projects_as_lists => { 
-        :area => :folder,
-        :project => :list,
-        :selected_to_do => :task },
+        :area => [:folder,
+                  {
+                    :name => :name,
+                  }],
+        :project => [:list,
+                     {
+                       :name => :name,
+                       :creation_date => :created_date,
+                     }],
+        :selected_to_do => [:task,
+                            {
+                              :name => :title,
+                              :creation_date => :created_date,
+                              :due_date => :due_date,
+                              :completion_date => :completed_date,
+                              :cancellation_date => :canceled_date,
+                              :status => {
+                                :completed => :completed,
+                                :canceled  => :canceled,
+                              },
+                              :notes => :notes,
+                            },
+                            Proc.new {|node,prop,options|
+                              # Things sets both 'completion_date' and 'cancellation_date'
+                              # for both completed and canceled tasks, which confuses THL
+                              if prop[:completed_date] && prop[:canceled_date]
+                                if prop[:canceled]
+                                  prop.delete(:completed)
+                                  prop.delete(:completed_date)
+                                else
+                                  prop.delete(:canceled)
+                                  prop.delete(:canceled_date)
+                                end
+                              end
+                              # Archive completed/canceled if requested
+                              prop[:archived] = true if options.archivecompleted && (prop[:completed] || prop[:canceled])
+                              # Add tags to title
+                              if node.tags?
+                                prop[:title] = [prop[:title], node.tags.map {|t| "/" + t.name + (t.name.index(" ")?"/":"") }].join(' ')
+                              end
+                            }
+                           ]
+      },
       :projects_as_tasks => {
-        :area => :list,
-        :project => :task,
-        :selected_to_do => :task  }
+        :area => [:list,
+                  {
+                    :name => :name,
+                  }],
+        :project => [:task,
+                     {
+                       :name => :title,
+                       :creation_date => :created_date,
+                       :due_date => :due_date,
+                       :completion_date => :completed_date,
+                       :cancellation_date => :canceled_date,
+                       :status => {
+                         :completed => :completed,
+                         :canceled  => :canceled,
+                       },
+                       :notes => :notes,
+                     },
+                     Proc.new {|node,prop,options|
+                       # Things sets both 'completed' and 'canceled' dates
+                       # for canceled tasks, which confuses THL
+                       if prop[:completed_date] && prop[:canceled_date]
+                         if prop[:canceled]
+                           prop.delete(:completed)
+                           prop.delete(:completed_date)
+                         else
+                           prop.delete(:canceled)
+                           prop.delete(:canceled_date)
+                         end
+                       end
+                       # Archive completed/canceled if requested
+                       prop[:archived] = true if options.archivecompleted && (prop[:completed] || prop[:canceled])
+                       # Add tags to title
+                       if node.tags?
+                         prop[:title] = [prop[:title], node.tags.map {|t| "/" + t.name + (t.name.index(" ")?"/":"") }].join(' ')
+                       end
+                     }
+                    ],
+        :selected_to_do => [:task,
+                            {
+                              :name => :title,
+                              :creation_date => :created_date,
+                              :due_date => :due_date,
+                              :completion_date => :completed_date,
+                              :cancellation_date => :canceled_date,
+                              :status => {
+                                :completed => :completed,
+                                :canceled  => :canceled,
+                              },
+                              :notes => :notes,
+                            },
+                            Proc.new {|node,prop,options|
+                              # Things sets both 'completed' and 'canceled' dates
+                              # for canceled tasks, which confuses THL
+                              if prop[:completed_date] && prop[:canceled_date]
+                                if prop[:canceled]
+                                  prop.delete(:completed)
+                                  prop.delete(:completed_date)
+                                else
+                                  prop.delete(:canceled)
+                                  prop.delete(:canceled_date)
+                                end
+                              end
+                              # Archive completed/canceled if requested
+                              prop[:archived] = true if options.archivecompleted && (prop[:completed] || prop[:canceled])
+                              # Add tags to title
+                              if node.tags?
+                                prop[:title] = [prop[:title], node.tags.map {|t| "/" + t.name + (t.name.index(" ")?"/":"") }].join(' ')
+                              end
+                            }
+                           ]
+      }
     }
 
     # For some reason some entities in THL use "title", others use "name"
@@ -136,15 +256,44 @@ module Things2THL
     # Get the type of the THL node that corresponds to the given Things node,
     # depending on the options specified
     def thl_node_type(node)
-      Constants::STRUCTURES[options.structure][node.type]
+      Constants::STRUCTURES[options.structure][node.type][0]
     end
 
     def props_from_node(node)
       newprops={}
-      # First the title, using the appropriate tag according to task type
-      newprops[Constants::TITLEPROP[thl_node_type(node)]] = node.name
-      # Also transfer notes. Only tasks can have notes in THL, and areas in Things don't have notes
-      newprops[:notes] = node.notes if node.type != :area && node.notes? && thl_node_type(node) == :task
+      # Process the properties, according to how the mapping is specified in STRUCTURES
+      pm=Constants::STRUCTURES[options.structure][node.type][1]
+      proptoset=nil
+      pm.keys.each do |k|
+        case pm[k]
+        when Symbol
+          proptoset=pm[k]
+          value=node.node.properties_.get[k]
+          newprops[proptoset] = value if value && value != :missing_value
+        when Array
+          proptoset=pm[k][0]
+          value=pm[k][1][node.node.properties_.get[k]]
+          newprops[proptoset] = value if value && value != :missing_value
+        when Hash
+          value = node.node.properties_.get[k]
+          if value && value != :missing_value
+            proptoset = pm[k][value]
+            if proptoset
+              newprops[proptoset] = true
+            end
+          end
+        else
+          puts "Invalid class for pm[k]=#{pm[k]} (#{pm[k].class})"
+        end
+        puts "Mapping node.#{k} (#{node.node.properties_.get[k]}) to newprops[#{proptoset}]=#{newprops[proptoset]}"
+      end
+      # Do any necesary postprocessing
+      postproc=Constants::STRUCTURES[options.structure][node.type][2]
+      if postproc
+        puts "Calling post-processor #{postproc.to_s} with newprops=#{newprops.inspect}"
+        postproc.call(node,newprops, options)
+        puts "After post-processor: #{newprops.inspect}"
+      end
       return newprops
     end
 
@@ -154,6 +303,7 @@ module Things2THL
 
     def find_or_create_list(name, parent = @thl.folders_group.get)
       # Get list of children
+      puts "parent of #{name} = #{parent}" if $DEBUG
       if parent.class_.get != :folder
         return nil
       else
@@ -172,8 +322,9 @@ module Things2THL
                       :with_properties => { :name => name })
     end
 
+    # Return the provided top level node, or the folders group if the option is not specified
     def top_level_node
-      return nil unless options.toplevel
+      return @thl.folders_group.get unless options.toplevel
 
       unless @top_level_node
         # Create the top-level node if we don't have it cached yet
@@ -191,11 +342,7 @@ module Things2THL
       case node.type
       when :area
         # If a top-level folder was specified, use that, otherwise use the THL folders group
-        if options.toplevel
-          container=top_level_node
-        else
-          container=@thl.folders_group.get
-        end
+        container=top_level_node
       when :project
         if options.areas && node.area?
           area_id=node.area.id_
@@ -206,11 +353,7 @@ module Things2THL
             container=process(node.area)
           end
         else
-          if options.toplevel
-            container=top_level_node
-          else
-            container=@thl.folders_group.get
-          end
+          container=top_level_node
         end
       when :selected_to_do
         if node.project?
@@ -239,8 +382,7 @@ module Things2THL
 
       # Now we check the container type. Tasks can only be contained in lists,
       # so if the container is a folder, we have to create a list to hold the task
-      if container && (container.class_.get == :folder) &&
-          (Constants::STRUCTURES[options.structure][node.type] == :task)
+      if container && (container.class_.get == :folder) && (thl_node_type(node) == :task)
         if node.type == :project
           find_or_create_list('Projects', container)
         else
@@ -253,7 +395,7 @@ module Things2THL
 
     def create_in_thl(node, parent)
       if (parent)
-        new_node_type = Constants::STRUCTURES[options.structure][node.type]
+        new_node_type = thl_node_type(node)
         result=parent.end.make(:new => new_node_type,
                                :with_properties => props_from_node(node) )
         if node.type == :area || node.type == :project

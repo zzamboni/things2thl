@@ -13,6 +13,7 @@ options.structure = :projects_as_lists
 options.areas = true
 options.quiet = false
 options.dryrun = false
+options.archivecompleted = true
 opts = OptionParser.new do |opts|
   opts.separator ''
   opts.separator 'Options:'
@@ -34,6 +35,7 @@ opts = OptionParser.new do |opts|
   end
 
   opts.on("-c", "--completed", 'Transfer also completed/canceled tasks and projects (default: no)') { options.completed = true }
+  opts.on("--no-archive-completed", 'If transferring completed/canceled tasks, also mark them as archived (default: yes)') {options.archivecompleted = false }
   opts.on("-q", "--quiet", "Do not print items as they are processed") { options.quiet = true }
   opts.on("-n", "--dry-run", "Do not create anything in THL, just print the items that would be created") { options.dryrun = true }
 #  opts.on("-n", "--notes", "Shows only tasks with notes") { options[:tasks] = { :onlynotes => true } }

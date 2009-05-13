@@ -4,4 +4,54 @@ Conversion program to transfer all tasks from Things
 (http://culturedcode.com/things/ ) to The Hit List
 (http://www.potionfactory.com/thehitlist/ ).
 
-Still not full functional. DO NOT USE.
+To see a usage message:
+
+./bin/things2thl -h
+
+WARNING:
+--------
+
+Use if you want, but a lot of functionality is still missing,
+including:
+
+- For now all tasks/projects are lumped together, regardless of which
+  view they came from in Things.
+
+  Plan: Put tasks into Inbox, Today, Scheduled, Someday, Trash, etc.
+
+- Handling contexts vs tags
+
+  Plan: make it a user option which Things tasks should be considered
+  as contexts.
+
+- Handling completed projects
+
+  Plan: put them in a different folder/list, user-definable option
+
+- Handling project tags
+
+  Plan: propagate them to individual tasks if --projects-as-lists is
+  	used, otherwise leave them in the project task.
+
+- Handle rich-text notes (with attachments, links, etc.) properly
+
+  Plan: not sure yet. Need to investigate how notes are stored in
+  THL (Things uses an XML format)
+
+
+Known issues:
+-------------
+
+- Cancellation/completion dates are not transferred, because THL
+  handles those attributes as read-only. So if you choose to transfer
+  completed/canceled tasks, they will all appear in your "completed
+  today" view.
+
+
+INSTALL:
+--------
+
+You need to install rb-appscript from
+http://appscript.sourceforge.net/rb-appscript/install.html
+
+
