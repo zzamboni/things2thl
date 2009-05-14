@@ -33,6 +33,13 @@ module Things2THL
     #    the original node, the produced new properties hash and the
     #    Things2THL object as parameters, and do any necessary
     #    postprocessing on the new properties
+    #    If postblock inserts in the properties hash an item with the key
+    #    :__newnodes__, it should be an array with items of the form
+    #       { :new => :what,
+    #         :with_properties => { properties }
+    #       }
+    #    Those items will be added to the new THL node immediately
+    #    after its creation.
     STRUCTURES = {
       :projects_as_lists => { 
         :area => [:folder,
@@ -43,7 +50,12 @@ module Things2THL
                      {
                        :name => :name,
                        :creation_date => :created_date,
-                     }],
+                     },
+                     Proc.new {|node,prop,obj|
+                       obj.add_list_notes(node,prop)
+                       obj.add_project_duedate(node,prop)
+                     }
+                    ],
         :selected_to_do => [:task,
                             {
                               :name => :title,
@@ -59,8 +71,8 @@ module Things2THL
                             },
                             Proc.new {|node,prop,obj|
                               obj.fix_completed_canceled(node, prop)
-                              obj.archive_completed(node, prop)
-                              obj.add_tags(node, prop)
+                              obj.archive_completed(prop)
+                              obj.add_tags(node, prop, true, true)
                               obj.check_today(node, prop)
                             }
                            ]
@@ -85,8 +97,8 @@ module Things2THL
                      },
                      Proc.new {|node,prop,obj|
                        obj.fix_completed_canceled(node, prop)
-                       obj.archive_completed(node, prop)
-                       obj.add_tags(node, prop)
+                       obj.archive_completed(prop)
+                       obj.add_tags(node, prop, false, true)
                      }
                     ],
         :selected_to_do => [:task,
@@ -104,8 +116,8 @@ module Things2THL
                             },
                             Proc.new {|node,prop,obj|
                               obj.fix_completed_canceled(node, prop)
-                              obj.archive_completed(node, prop)
-                              obj.add_tags(node, prop)
+                              obj.archive_completed(prop)
+                              obj.add_tags(node, prop, false, true)
                               obj.check_today(node, prop)
                             }
                            ]
@@ -367,22 +379,19 @@ module Things2THL
     def create_in_thl(node, parent)
       if (parent)
         new_node_type = thl_node_type(node)
+        new_node_props = props_from_node(node)
+        additional_nodes = new_node_props.delete(:__newnodes__)
         result=parent.end.make(:new => new_node_type,
-                               :with_properties => props_from_node(node) )
+                               :with_properties => new_node_props )
         if node.type == :area || node.type == :project
           @cache_nodes[node.id_]={}
           @cache_nodes[node.id_][:things_node] = node
           @cache_nodes[node.id_][:thl_node] = result
         end
-        # Process notes only for non-areas
-        if (node.type != :area)
-          # If the node has notes but the THL node is a list, add the notes as a task in there
-          # If the node has notes but the THL node is a folder (this shouldn't happen), print a warning
-          if node.notes? && new_node_type == :list
-            result.end.make(:new => :task, :with_properties => { :title => "Notes for this list from Things", :notes => node.notes })
-          end
-          if node.notes? && new_node_type == :folder
-            $stderr.puts "Error: cannot transfer notes into new folder: #{node.notes}"
+        # Add new nodes
+        if additional_nodes
+          additional_nodes.each do |n|
+            result.end.make(n)
           end
         end
         return result
@@ -501,16 +510,24 @@ module Things2THL
     end
 
     # Archive completed/canceled if requested
-    def archive_completed(node, prop)
+    def archive_completed(prop)
       prop[:archived] = true if options.archivecompleted && (prop[:completed] || prop[:canceled])
     end
 
     # Add tags to title
-    def add_tags(node, prop)
+    def add_tags(node, prop, inherit_project_tags, inherit_area_tags)
       tasktags = node.tags.map {|t| t.name }
-      if node.project?
-        # Merge any project tags
-        tasktags |= node.project.tags.map {|t| t.name }
+      if inherit_project_tags
+        # Merge project and area tags
+        if node.project?
+          tasktags |= node.project.tags.map {|t| t.name }
+          if options.areas && node.project.area?
+            tasktags |= node.project.area.tags.map {|t| t.name }
+          end
+        end
+      end
+      if options.areas && node.area? && inherit_area_tags
+        tasktags |= node.area.tags.map {|t| t.name }
       end
       unless tasktags.empty?
         prop[:title] = [prop[:title], tasktags.map {|t| "/" + t + (t.index(" ")?"/":"") }].join(' ')
@@ -522,6 +539,50 @@ module Things2THL
       if in_focus?('Today', node)
         prop[:start_date] = Time.parse('today at 00:00')
       end
+    end
+
+    def add_extra_node(prop, newnode)
+      prop[:__newnodes__] = [] unless prop.has_key?(:__newnodes__)
+      prop[:__newnodes__].push(newnode)
+    end
+
+    # Add a new task containing project notes when the project is a THL list,
+    # since THL lists cannot have notes
+    def add_list_notes(node, prop)
+      new_node_type = thl_node_type(node)
+      # Process notes only for non-areas
+      if (node.type != :area)
+        # If the node has notes but the THL node is a list, add the notes as a task in there
+        # If the node has notes but the THL node is a folder (this shouldn't happen), print a warning
+        if node.notes? && new_node_type == :list
+          newnode = {
+            :new => :task,
+            :with_properties => { :title => "Notes for '#{prop[:name]}'", :notes => node.notes }}
+          # Mark as completed if the project is completed
+          if node.status == :completed || node.status == :canceled
+            newnode[:with_properties][:completed] = true
+            archive_completed(newnode[:with_properties])
+          end
+          add_extra_node(prop, newnode)
+        end
+        if node.notes? && new_node_type == :folder
+          $stderr.puts "Error: cannot transfer notes into new folder: #{node.notes}"
+        end
+      end
+    end
+
+    # When projects are lists, if the project has a due date, we add a bogus task to it
+    # to represent its due date, since lists in THL cannot have due dates.
+    def add_project_duedate(node, prop)
+      new_node_type = thl_node_type(node)
+      return unless node.type == :project && new_node_type == :list && node.due_date?
+
+      # Create the new node
+      newnode = {
+        :new => :task,
+        :with_properties => { :title => "Due date for '#{prop[:name]}'", :due_date => node.due_date }
+      }
+      add_extra_node(prop, newnode)
     end
 
   end #### class Converter
