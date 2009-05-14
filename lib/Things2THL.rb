@@ -2,6 +2,7 @@
 
 #require File.join(File.dirname(__FILE__), *%w".. .. things-rb lib things")
 require "ostruct"
+require 'time'
 begin; require 'rubygems'; rescue LoadError; end
 require 'appscript'; include Appscript
 
@@ -60,6 +61,7 @@ module Things2THL
                               obj.fix_completed_canceled(node, prop)
                               obj.archive_completed(node, prop)
                               obj.add_tags(node, prop)
+                              obj.check_today(node, prop)
                             }
                            ]
       },
@@ -104,6 +106,7 @@ module Things2THL
                               obj.fix_completed_canceled(node, prop)
                               obj.archive_completed(node, prop)
                               obj.add_tags(node, prop)
+                              obj.check_today(node, prop)
                             }
                            ]
       }
@@ -202,13 +205,18 @@ module Things2THL
         exit(1)
       end
 
-      # Structures to keep track of already create items
+      # Structure to keep track of already create items
       # These hashes are indexed by Things node ID (node.id_). Each element
       # contains a hash with two elements:
       #     :things_node - pointer to the corresponding AS node in Things
       #     :thl_node    - pointer to the corresponding AS node in THL
       @cache_nodes = {}
 
+      # Cache of which items are contained in each focus (Inbox, etc.)
+      # Indexed by focus name, value is a hash with elements keyed by the
+      # id_ of each node that belongs to that focus. Existence of the key
+      # indicates existence in the focus.
+      @cache_focus = {}
     end
 
     # Get the type of the THL node that corresponds to the given Things node,
@@ -259,18 +267,19 @@ module Things2THL
       return parent.properties_.get[Constants::TITLEPROP[parent.class_.get]] + " - loose tasks"
     end
 
-    def find_or_create_list(name, parent = @thl.folders_group.get)
-      # Get list of children
+    # Find or create a list or a folder inside the given parent (or the top-level folders group if not given)
+    def find_or_create(what, name, parent = @thl.folders_group.get)
+      unless what == :list || what == :folder
+        raise "find_or_create: 'what' parameter has to be :list or :folder"
+      end
       puts "parent of #{name} = #{parent}" if $DEBUG
       if parent.class_.get != :folder
-        return nil
+        raise "find_or_create: parent is not a folder, it's a #{parent.class_.get}"
       else
-        lists = parent.lists.get.map { |l| l.name.get }
-        n = lists.index(name)
-        if n
-          return parent.lists.get[n]
+        if parent.groups[name].exists
+          return parent.groups[name].get
         else
-          return parent.end.make(:new => :list, :with_properties => {:name => name})
+          return parent.end.make(:new => what, :with_properties => {:name => name})
         end
       end
     end
@@ -312,7 +321,7 @@ module Things2THL
           end
         else
           if options.structure == :projects_as_tasks
-            container=find_or_create_list('Projects', top_level_node)
+            container=find_or_create(:list, 'Projects', top_level_node)
           else
             container=top_level_node
           end
@@ -336,7 +345,7 @@ module Things2THL
           end
         else
           # It's a loose task
-          container=find_or_create_list('Loose tasks', top_level_node)
+          container=find_or_create(:list, 'Loose tasks', top_level_node)
         end
       else
         raise "Invalid Things node type: #{node.type}"
@@ -346,9 +355,9 @@ module Things2THL
       # so if the container is a folder, we have to create a list to hold the task
       if container && (container.class_.get == :folder) && (thl_node_type(node) == :task)
         if node.type == :project
-          find_or_create_list('Projects', container)
+          find_or_create(:list, 'Projects', container)
         else
-          find_or_create_list(loose_tasks_name(container), container)
+          find_or_create(:list, loose_tasks_name(container), container)
         end
       else
         container
@@ -424,6 +433,55 @@ module Things2THL
       end
     end
 
+    # Get all the focus names
+    def get_focusnames
+      # Get only top-level items of type :list (areas are also there, but with type :area)
+      things.lists.get.select {|l| l.class_.get == :list }.map { |focus| focus.name.get }
+    end
+
+    # Create the focus caches
+    def create_focuscaches
+      get_focusnames.each { |focus|
+        puts "Creating focus cache for #{focus}..."
+        @cache_focus[focus] = {}
+        things.lists[focus].to_dos.get.each { |t|
+          @cache_focus[focus][t.id_.get] = true
+        }
+        puts "   Cache: #{@cache_focus[focus].inspect}"
+      }
+    end
+
+    # Get the focuses in which a task is visible
+    def focus_of(node)
+      result=[]
+      get_focusnames.each { |focus|
+        if in_focus?(focus, node)
+          result.push(focus)
+        end
+      }
+      result
+    end
+
+    # Check if a node is in a certain focus
+    # Node can be a ThingsNode, and AS node, or a node ID
+    def in_focus?(focus, node)
+      unless @cache_focus[focus]
+        create_focuscaches
+      end
+      case node
+      when ThingsNode
+        key = node.id_
+      when Appscript::Reference
+        key = node.id_.get
+      when String
+        key = node
+      else
+        puts "Unknown node object type: #{node.class}"
+        return nil
+      end
+      return @cache_focus[focus].has_key?(key)
+    end
+
     ###-------------------------------------------------------------------
     ### Methods to fix new nodes - called from the postproc block in STRUCTURES
 
@@ -449,8 +507,20 @@ module Things2THL
 
     # Add tags to title
     def add_tags(node, prop)
-      if node.tags?
-        prop[:title] = [prop[:title], node.tags.map {|t| "/" + t.name + (t.name.index(" ")?"/":"") }].join(' ')
+      tasktags = node.tags.map {|t| t.name }
+      if node.project?
+        # Merge any project tags
+        tasktags |= node.project.tags.map {|t| t.name }
+      end
+      unless tasktags.empty?
+        prop[:title] = [prop[:title], tasktags.map {|t| "/" + t + (t.index(" ")?"/":"") }].join(' ')
+      end
+    end
+
+    # Check if node is in the Today list
+    def check_today(node, prop)
+      if in_focus?('Today', node)
+        prop[:start_date] = Time.parse('today at 00:00')
       end
     end
 
