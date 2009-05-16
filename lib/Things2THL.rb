@@ -237,6 +237,11 @@ module Things2THL
       Constants::STRUCTURES[options.structure][node.type][0]
     end
 
+    # Get the name/title for a THL node.
+    def thl_node_name(node)
+      node.properties_.get[Constants::TITLEPROP[node.class_.get]]
+    end
+
     def props_from_node(node)
       newprops={}
       # Process the properties, according to how the mapping is specified in STRUCTURES
@@ -263,20 +268,24 @@ module Things2THL
         else
           puts "Invalid class for pm[k]=#{pm[k]} (#{pm[k].class})"
         end
-        puts "Mapping node.#{k} (#{node.node.properties_.get[k]}) to newprops[#{proptoset}]=#{newprops[proptoset]}"
+        puts "Mapping node.#{k} (#{node.node.properties_.get[k]}) to newprops[#{proptoset}]=#{newprops[proptoset]}" if $DEBUG
       end
       # Do any necesary postprocessing
       postproc=Constants::STRUCTURES[options.structure][node.type][2]
       if postproc
-        puts "Calling post-processor #{postproc.to_s} with newprops=#{newprops.inspect}"
+        puts "Calling post-processor #{postproc.to_s} with newprops=#{newprops.inspect}" if $DEBUG
         postproc.call(node, newprops, self)
-        puts "After post-processor: #{newprops.inspect}"
+        puts "After post-processor: #{newprops.inspect}" if $DEBUG
       end
       return newprops
     end
 
     def loose_tasks_name(parent)
-      return parent.properties_.get[Constants::TITLEPROP[parent.class_.get]] + " - loose tasks"
+      if parent == top_level_node
+        "Loose tasks"
+      else
+        thl_node_name(parent) + " - loose tasks"
+      end
     end
 
     # Find or create a list or a folder inside the given parent (or the top-level folders group if not given)
@@ -289,9 +298,9 @@ module Things2THL
         raise "find_or_create: parent is not a folder, it's a #{parent.class_.get}"
       else
         if parent.groups[name].exists
-          return parent.groups[name].get
+          parent.groups[name].get
         else
-          return parent.end.make(:new => what, :with_properties => {:name => name})
+          parent.end.make(:new => what, :with_properties => {:name => name})
         end
       end
     end
@@ -312,62 +321,159 @@ module Things2THL
       @top_level_node
     end
 
+    # Create (if necessary) and return an appropriate THL container
+    # for a given top-level Things focus.
+    # If --top-level-folder is specified, all of them are simply
+    # folders inside that folder.
+    # Otherwise:
+    #   Inbox => Inbox
+    #   Next  => default top level node
+    #   Scheduled, Someday => correspondingly-named top-level folders
+    #   Logbook => 'Completed' top-level folder
+    #   Projects => 'Projects' list if --projects-as-tasks
+    #            => 'Projects' folder if --projects-folder was specified
+    #            => default top level node otherwise
+    #   Trash   => ignore
+    #   Today   => ignore
+    def top_level_for_focus(focusnames)
+      # We loop through all the focus names given, and return the first
+      # one that produces a non-nil container
+      focusnames.each do |focusname|
+        result = if options.toplevel
+                   case focusname
+                   when 'Trash', 'Today'
+                     nil
+                   when 'Inbox', 'Next'
+                     find_or_create(:list, focusname, top_level_node)
+                   when 'Scheduled', 'Someday', 'Logbook'
+                     find_or_create(:folder, focusname, top_level_node)
+                   when 'Projects'
+                     if options.structure == :projects_as_tasks
+                       find_or_create(:list, options.projectsfolder || 'Projects', top_level_node)
+                     else
+                       if options.projectsfolder
+                         find_or_create(:folder, options.projectsfolder, top_level_node)
+                       else
+                         top_level_node
+                       end
+                     end
+                   else 
+                     puts "Invalid focus name: #{focusname}"
+                     top_level_node
+                   end
+                 else
+                   # That was easy. Now for the more complicated part.
+                   case focusname
+                   when 'Inbox'
+                     thl.inbox.get
+                   when 'Next'
+                     top_level_node
+                   when 'Scheduled', 'Someday', 'Logbook'
+                     find_or_create(:folder, focusname, top_level_node)
+                   when 'Projects'
+                     if options.structure == :projects_as_tasks
+                       find_or_create(:list, options.projectsfolder || 'Projects', top_level_node)
+                     else
+                       if options.projectsfolder
+                         find_or_create(:folder, options.projectsfolder, top_level_node)
+                       else
+                         top_level_node
+                       end
+                     end
+                   when 'Trash', 'Today'
+                     nil
+                   else 
+                     puts "Invalid focus name: #{focusname}"
+                     top_level_node
+                   end
+                 end
+        return result if result
+      end
+      nil
+    end
+
+    # Get the top-level focus for a node. If it's not directly contained
+    # in a focus, check its project and area, if any.
+    def top_level_for_node(node)
+      # Areas are always contained at the top level, unless they
+      # are suspended
+      if node.type == :area
+        if node.suspended
+          return top_level_for_focus('Someday')
+        else
+          return top_level_node
+        end
+      end
+
+      # Else, find if the node is contained in a top-level focus...
+      foci=focus_of(node)
+      # ...if not, look at its project and area
+      if foci.empty?
+        if node.project?
+          tl=top_level_for_node(node.project)
+          if !tl && node.area?
+            tl=top_level_for_node(node.area)
+          end
+        elsif node.area?
+          tl=top_level_for_node(node.area)
+        end
+        return tl
+      end
+      top_level_for_focus(foci)
+    end
+
+    # See if we have processed a node already - in that case return
+    # the cached THL node. Otherwise, invoke the process() function
+    # on it, which will put it in the cache.
+    def get_cached_or_process(node)
+      node_id=node.id_
+      if @cache_nodes.has_key?(node_id)
+        @cache_nodes[node_id][:thl_node]
+      else
+        # If we don't have the corresponding node cached yet, do it now
+        process(node)
+      end
+    end
+
     # Create if necessary and return an appropriate THL container
     # object for the new node, according to the node's class and
     # options selected.  A task in THL can only be contained in a list
     # or in another task. So if parent is a folder and note is a task,
     # we need to find or create an auxiliary list to contain it.
     def container_for(node)
-      case node.type
-      when :area
-        # If a top-level folder was specified, use that, otherwise use the THL folders group
-        container=top_level_node
-      when :project
-        if options.areas && node.area?
-          area_id=node.area.id_
-          if @cache_nodes.has_key?(area_id)
-            container=@cache_nodes[area_id][:thl_node]
-          else
-            # If we don't have the corresponding area cached yet, do it now
-            container=process(node.area)
-          end
-        else
-          if options.structure == :projects_as_tasks
-            container=find_or_create(:list, 'Projects', top_level_node)
-          else
-            container=top_level_node
-          end
-        end
-      when :selected_to_do
-        if node.project?
-          project_id=node.project.id_
-          if @cache_nodes.has_key?(project_id)
-            container=@cache_nodes[project_id][:thl_node]
-          else
-            # If we don't have the corresponding project cached yet, do it now
-            container=process(node.project)
-          end
-        elsif node.area? && options.areas
-          area_id=node.area.id_
-          if @cache_nodes.has_key?(area_id)
-            container=@cache_nodes[area_id][:thl_node]
-          else
-            # If we don't have the corresponding area cached yet, do it now
-            container=process(node.area)
-          end
-        else
-          # It's a loose task
-          container=find_or_create(:list, 'Loose tasks', top_level_node)
-        end
-      else
-        raise "Invalid Things node type: #{node.type}"
-      end
+      # If its top-level container is nil, it means we need to skip this node
+      # unless it's an area, areas don't have a focus
+      tlcontainer=top_level_for_node(node)
+      return nil unless tlcontainer
+
+      # Otherwise, run through the process
+      container = case node.type
+                  when :area
+                    tlcontainer
+                  when :project
+                    if options.areas && node.area?
+                      get_cached_or_process(node.area)
+                    else
+                      tlcontainer
+                    end
+                  when :selected_to_do
+                    if node.project?
+                      get_cached_or_process(node.project)
+                    elsif node.area? && options.areas
+                      get_cached_or_process(node.area)
+                    else
+                      # It's a loose task
+                      tlcontainer
+                    end
+                  else
+                    raise "Invalid Things node type: #{node.type}"
+                  end
 
       # Now we check the container type. Tasks can only be contained in lists,
       # so if the container is a folder, we have to create a list to hold the task
       if container && (container.class_.get == :folder) && (thl_node_type(node) == :task)
         if node.type == :project
-          find_or_create(:list, 'Projects', container)
+          find_or_create(:list, options.projectsfolder || 'Projects', container)
         else
           find_or_create(:list, loose_tasks_name(container), container)
         end
@@ -400,24 +506,6 @@ module Things2THL
       end
     end
 
-    def traverse(node, level = 0, parent=nil)
-      return unless node
-      return if ( node.status == :completed || node.status == :canceled ) && !(options.completed)
-      newnode=nil
-      unless (options.quiet) 
-        bullet  = (node.status == :completed) ? "✓" : (node.status == :canceled) ? "×" : "-"
-        puts bullet + " " + node.name + " (#{node.type})" 
-      end
-      unless (options.dryrun || parent == nil)
-        newnode=create_in_thl(node, parent)
-      end
-      if node.to_dos?
-        node.to_dos.map do |child|
-          traverse(child, level + 1, newnode)
-        end
-      end
-    end
-
     # Process a single node. Returns the new THL node.
     def process(node)
       return unless node
@@ -430,33 +518,34 @@ module Things2THL
 
       container=container_for(node)
       puts "Container for #{node.name}: #{container}" if $DEBUG
-      raise "Could not get a container for node '#{node.name}'" unless container
+      unless container
+        puts "Skipping trashed task '#{node.name}'" unless options.quiet
+        return
+      end
       
       unless (options.quiet) 
         bullet  = (node.type == :area) ? "*" : ((node.status == :completed) ? "✓" : (node.status == :canceled) ? "×" : "-")
         puts bullet + " " + node.name + " (#{node.type})" 
       end
 
-      unless (options.dryrun)
-        newnode=create_in_thl(node, container)
-      end
+      newnode=create_in_thl(node, container)
     end
 
     # Get all the focus names
-    def get_focusnames
+    def get_focusnames(all=false)
       # Get only top-level items of type :list (areas are also there, but with type :area)
-      things.lists.get.select {|l| l.class_.get == :list }.map { |focus| focus.name.get }
+      things.lists.get.select {|l| l.class_.get == :list || all }.map { |focus| focus.name.get }
     end
 
     # Create the focus caches
     def create_focuscaches
       get_focusnames.each { |focus|
-        puts "Creating focus cache for #{focus}..."
+        puts "Creating focus cache for #{focus}..." if $DEBUG
         @cache_focus[focus] = {}
         things.lists[focus].to_dos.get.each { |t|
           @cache_focus[focus][t.id_.get] = true
         }
-        puts "   Cache: #{@cache_focus[focus].inspect}"
+        puts "   Cache: #{@cache_focus[focus].inspect}" if $DEBUG
       }
     end
 
@@ -468,6 +557,9 @@ module Things2THL
           result.push(focus)
         end
       }
+      if node.type == :area && node.suspended
+        result.push('Someday')
+      end
       result
     end
 

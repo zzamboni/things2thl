@@ -4,40 +4,47 @@ Conversion program to transfer all tasks from Things
 (http://culturedcode.com/things/ ) to The Hit List
 (http://www.potionfactory.com/thehitlist/ ).
 
-To see a usage message:
+Written by Diego Zamboni <diego@zzamboni.org>
 
-./bin/things2thl -h
-
-WARNING:
+INSTALL:
 --------
 
-Use if you want, but a lot of functionality is still missing,
-including:
+You need Things 1.1.1 or later, since things2thl requires Applescript
+support.
 
-- For now all tasks/projects are lumped together, regardless of which
-  view they came from in Things.
+You need to install rb-appscript from
+http://appscript.sourceforge.net/rb-appscript/install.html
 
-  Plan: Put tasks into Inbox, Today, Scheduled, Someday, Trash, etc.
+Run things2thl by changing into the base directory of this
+distribution and running:
+	     ./bin/things2thl [options]
+
+
+USAGE:
+-----
+
+To see a usage message:
+
+   ./bin/things2thl -h
+
+
+
+Functionality still missing:
+---------------------------
 
 - Handling contexts vs tags
 
   Plan: make it a user option which Things tasks should be considered
   as contexts.
 
-- Handling completed projects
-
-  Plan: put them in a different folder/list, user-definable option
-
-- Handling project tags
-
-  Plan: propagate them to individual tasks if --projects-as-lists is
-  	used, otherwise leave them in the project task.
-
 - Handle rich-text notes (with attachments, links, etc.) properly
 
   Plan: not sure yet. Need to investigate how notes are stored in
   THL (Things uses an XML format)
 
+- Handling delegation ("People" feature in Things)
+
+  Not sure how to transfer this to THL. Ideas are welcome.
 
 Known issues:
 -------------
@@ -47,11 +54,7 @@ Known issues:
   completed/canceled tasks, they will all appear in your "completed
   today" view.
 
-
-INSTALL:
---------
-
-You need to install rb-appscript from
-http://appscript.sourceforge.net/rb-appscript/install.html
-
+- Tasks in the Things "Scheduled" focus are transferred, but the
+  scheduling itself is not transferred, because this information is
+  not accessible through AS from either Things not THL.
 

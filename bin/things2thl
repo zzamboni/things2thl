@@ -12,8 +12,8 @@ options.database = nil
 options.structure = :projects_as_lists
 options.areas = true
 options.quiet = false
-options.dryrun = false
 options.archivecompleted = true
+options.projectsfolder = nil
 opts = OptionParser.new do |opts|
   opts.separator ''
   opts.separator 'Options:'
@@ -33,17 +33,23 @@ opts = OptionParser.new do |opts|
           " (Inbox, etc. will also be created there instead of their corresponding places)") do |toplevel|
     options.toplevel = toplevel
   end
+  opts.on("--projects-folder FOLDER", "If specified, the named folder will be created to contain all projects when",
+          "  --projects-as-lists is used (otherwise they will be put in the top folders group).",
+          "  If --projects-as-tasks is used, a 'Projects' list is always created, but this option",
+          "  can be used to specify its name.") do |projfolder|
+    options.projectsfolder = projfolder
+  end
 
   opts.on("-c", "--completed", 'Transfer also completed/canceled tasks and projects (default: no)') { options.completed = true }
   opts.on("--no-archive-completed", 'If transferring completed/canceled tasks, also mark them as archived (default: yes)') {options.archivecompleted = false }
   opts.on("-q", "--quiet", "Do not print items as they are processed") { options.quiet = true }
-  opts.on("-n", "--dry-run", "Do not create anything in THL, just print the items that would be created") { options.dryrun = true }
+#  opts.on("-n", "--dry-run", "Do not create anything in THL, just print the items that would be created") { options.dryrun = true }
 #  opts.on("-n", "--notes", "Shows only tasks with notes") { options[:tasks] = { :onlynotes => true } }
 #  opts.on("-a", "--all", 'Shows all tasks in the focus') { |f| options[:tasks] = { :children => false } }
 
   opts.on("-h", "--help", "Shows this help message") { opts.show_usage }
   opts.on("-v", "--version", "Shows version") do
-    puts version
+    puts Things2THL::Version::STRING
     exit
   end
 
@@ -67,9 +73,7 @@ opts.parse!
 
 converter = Things2THL.new(options, options.thingsapp, options.thlapp)
 things = converter.things
-puts things
 thl = converter.thl
-puts thl
 
 # Create top-level containers if needed
 
