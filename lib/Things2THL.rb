@@ -148,6 +148,7 @@ module Things2THL
 
     def initialize(node)
       @node = node
+      @values = {}
       return unless @@defined.empty?
       (node.properties + node.elements).each do |prop|
         next if @@defined.has_key?(prop)
@@ -158,13 +159,14 @@ module Things2THL
         when 'area', 'project', 'areas', 'projects', 'parent_tag', 'delegate'
           ThingsNode.class_eval <<-EOF
           def #{prop}
+            return @values['#{prop}'] if @values.has_key?('#{prop}')
             value=node.#{prop}.get
-            case value
-            when nil, :missing_value
-              nil
-            else
-              ThingsNode.new(value)
-            end
+              @values['#{prop}']=case value
+                                 when nil, :missing_value
+                                   nil
+                                 else
+                                   ThingsNode.new(value)
+                                 end
           end
           def #{prop}?
             !!#{prop}
@@ -174,13 +176,14 @@ module Things2THL
           # For to_dos and tags, map the returned array to ThingsNode as well
           ThingsNode.class_eval <<-EOF
           def #{prop}
+            return @values['#{prop}'] if @values.has_key?('#{prop}')
             value=node.#{prop}.get
-            case value
-            when nil, :missing_value
-              nil
-            else
-              value.map { |n| ThingsNode.new(n) }
-            end
+              @values['#{prop}']=case value
+                                 when nil, :missing_value
+                                   nil
+                                 else
+                                   value.map { |n| ThingsNode.new(n) }
+                                 end
           end
           def #{prop}?
             !!#{prop}
@@ -189,9 +192,10 @@ module Things2THL
         else
           ThingsNode.class_eval <<-EOF
           def #{prop}
+            return @values['#{prop}'] if @values.has_key?('#{prop}')
             value=node.#{prop}.get
             value=nil if value==:missing_value
-            value
+            @values['#{prop}']=value
           end
           def #{prop}?
             !!#{prop}
