@@ -533,8 +533,8 @@ module Things2THL
 
     # Get all the focus names
     def get_focusnames(all=false)
-      # Get only top-level items of type :list (areas are also there, but with type :area)
-      things.lists.get.select {|l| l.class_.get == :list || all }.map { |focus| focus.name.get }
+      # Get only top-level items of type :list (areas are also there, but with type :area) unless all==true
+      @cached_focusnames||=things.lists.get.select {|l| all || l.class_.get == :list }.map { |focus| focus.name.get }
     end
 
     # Create the focus caches
@@ -542,6 +542,7 @@ module Things2THL
       get_focusnames.each { |focus|
         puts "Creating focus cache for #{focus}..." if $DEBUG
         @cache_focus[focus] = {}
+        next if focus == "Logbook" && !options.completed
         things.lists[focus].to_dos.get.each { |t|
           @cache_focus[focus][t.id_.get] = true
         }
