@@ -144,9 +144,15 @@ module Things2THL
   class ThingsNode
     attr_accessor :node
 
+    @@defined={}
+
     def initialize(node)
       @node = node
+      return unless @@defined.empty?
       (node.properties + node.elements).each do |prop|
+        next if @@defined.has_key?(prop)
+        puts "Defining ThingsNode.#{prop}"
+        @@defined[prop]=true
         case prop
         # For area, project and some others, convert the result to a ThingsNode as well
         when 'area', 'project', 'areas', 'projects', 'parent_tag', 'delegate'
