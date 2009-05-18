@@ -1,6 +1,7 @@
 Things2THL
+http://zzamboni.github.com/things2thl/
 
-Conversion program to transfer all tasks from Things
+Conversion program to transfer data from Things
 (http://culturedcode.com/things/ ) to The Hit List
 (http://www.potionfactory.com/thehitlist/ ).
 
@@ -15,27 +16,40 @@ support.
 You need to install rb-appscript from
 http://appscript.sourceforge.net/rb-appscript/install.html
 
-Run things2thl by changing into the base directory of this
-distribution and running:
-	     ./bin/things2thl [options]
+Then install things2thl by running:
+     $ sudo gem install zzamboni-things2thl --source http://gems.github.com/
 
 
 USAGE:
 -----
 
-To see a usage message:
+Usage: things2thl [options]
 
-   ./bin/things2thl -h
+Options:
+        --projects-as-lists          Convert projects in Things to lists in THL (default)
+        --projects-as-tasks          Convert projects in Things to tasks in THL
+        --[no-]areas                 Transfer areas from Things (default: yes)
+    -C, --context-tags-regex REGEX   Regular expression to identify tags that should be interpreted as contexts.
+                                       (default: ^@)
+        --top-level-folder FOLDER    If specified, do the import inside the named folders, instead of the top level
+                                      (Inbox, etc. will also be created there instead of their corresponding places)
+        --projects-folder FOLDER     If specified, the named folder will be created to contain all projects when
+                                       --projects-as-lists is used (otherwise they will be put in the top folders group).
+                                       If --projects-as-tasks is used, a 'Projects' list is always created, but this option
+                                       can be used to specify its name.
+    -c, --completed                  Transfer also completed/canceled tasks and projects (default: no)
+        --[no-]archive-completed     If transferring completed/canceled tasks, also mark them as archived (default: yes)
+    -q, --quiet                      Do not print items as they are processed
+    -h, --help                       Shows this help message
+    -v, --version                    Shows version
 
+Options you should seldom need:
+        --things THINGSAPP           Location of the Things application (default: /Applications/Things.app)
+        --thl THLAPP                 Location of the The Hit List application (default: /Applications/The Hit List.app)
 
 
 Functionality still missing:
 ---------------------------
-
-- Handling contexts vs tags
-
-  Plan: make it a user option which Things tasks should be considered
-  as contexts.
 
 - Handle rich-text notes (with attachments, links, etc.) properly
 
@@ -45,6 +59,12 @@ Functionality still missing:
 - Handling delegation ("People" feature in Things)
 
   Not sure how to transfer this to THL. Ideas are welcome.
+
+- Handle "time estimate" tags.
+
+  Plan: Allow specifying certain Things tags (e.g. I use "10min",
+  "30min", "60min") that should be used to set the time estimate for
+  the task in THL.
 
 Known issues:
 -------------
