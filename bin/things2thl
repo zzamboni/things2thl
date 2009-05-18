@@ -78,15 +78,21 @@ thl = converter.thl
 # Create top-level containers if needed
 
 # First, traverse all areas
-things.areas.get.each { |area| converter.process(Things2THL::ThingsNode.new(area)) } if options.areas
+if options.areas
+  things.areas.get.each do |area|
+    converter.process(Things2THL::ThingsNode.new(area))
+  end
+end
 
 # Next, traverse all projects, putting each one inside its corresponding area
-things.projects.get.each { |project| converter.process(Things2THL::ThingsNode.new(project)) }
+things.projects.get.each do |project|
+  converter.process(Things2THL::ThingsNode.new(project))
+end
 
 # Now do the tasks
 # This is more complicated because:
 # - to_dos returns not only tasks, also projects (not areas)
-# - to-dos returns tasks from all the views: Inbox, Scheduled, Someday, and Next, so we have
+# - to-dos returns tasks from all the views: Inbox, Today, Scheduled, Someday, and Next, so we have
 #   to separate them and create the appropriate containers as needed
 things.to_dos.get.each do |t|
   task=Things2THL::ThingsNode.new(t)
@@ -94,30 +100,3 @@ things.to_dos.get.each do |t|
   converter.process(task)
 end
 
-# # First traverse areas
-# puts "Areas:"
-# things.areas.each { |n| converter.traverse(n, 0, thl.folders_group.get) }
-# # Then traverse area-less projects
-# puts "\nProjects without an area:"
-# parent = thl.folders_group.get
-# if (options.structure == :projects_as_tasks)
-#   parent = converter.find_or_create_list(parent, "Projects")
-# end
-# things.projects.each { |n| converter.traverse(n, 0, parent) unless n.parent_area? }
-# Then tasks without a project
-#puts "\nTasks without a project:"
-#things.focus(:next).children.each { |n| traverse(n, 0, options) unless n.parent? }
-
-#############
-
-# thl.folders_group.end.make(:new => :folder, :with_properties => {:name => 'test folder'})
-# app("/Applications/The Hit List.app").folders_group.folders.ID("1B98A3855A3C79DE").end.make(:new => :list, :with_properties => {:name => 'test list'})
-# task=app("/Applications/The Hit List.app").folders_group.folders.ID("1B98A3855A3C79DE").lists.ID("43B3187E6D90AB8D").end.make(:new => :task, :with_properties => {:title => 'test
-#  task', :notes => 'test notes' })
-# task.end.make(:new => :task, :with_properties => {:title => 'test subtask'})
-# task.set(:title => 'new title')
-# task.set(title => 'new title')
-# task.title = 'new title'
-# thl.set(task.title, :to => 'new title')
-# task.title.set('another title')
-# task.title.get
