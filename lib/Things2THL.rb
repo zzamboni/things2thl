@@ -152,7 +152,7 @@ module Things2THL
       return unless @@defined.empty?
       (node.properties + node.elements).each do |prop|
         next if @@defined.has_key?(prop)
-        puts "Defining ThingsNode.#{prop}"
+        puts "Defining ThingsNode.#{prop}" if $DEBUG
         @@defined[prop]=true
         case prop
         # For area, project and some others, convert the result to a ThingsNode as well
