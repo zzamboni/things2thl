@@ -11,9 +11,10 @@ require 'appscript'; include Appscript
 module Things2THL
   module Version
     MAJOR  = 0
-    MINOR  = 1
+    MINOR  = 2
+    PATH   = 1
 
-    STRING = [MAJOR, MINOR].join(".")
+    STRING = [MAJOR, MINOR, PATCH].join(".")
   end
 
   ####################################################################
