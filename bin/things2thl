@@ -14,6 +14,7 @@ options.areas = true
 options.quiet = false
 options.archivecompleted = true
 options.projectsfolder = nil
+options.contexttagsregex = '^@'
 opts = OptionParser.new do |opts|
   opts.separator ''
   opts.separator 'Options:'
@@ -28,6 +29,10 @@ opts = OptionParser.new do |opts|
   opts.on("--projects-as-lists", "Convert projects in Things to lists in THL (default)") { options.structure = :projects_as_lists }
   opts.on("--projects-as-tasks", "Convert projects in Things to tasks in THL") { options.structure = :projects_as_tasks }
   opts.on("--no-areas", "Ignore areas in Things") { options.areas = false }
+  opts.on('-C REGEX', '--context-tags-regex REGEX', 'Regular expression to identify tags that should be interpreted as contexts.',
+          "  (default: #{options.contexttagsregex})") do |regex|
+    options.contexttagsregex = regex
+  end
 
   opts.on("--top-level-folder FOLDER", "If specified, do the import inside the named folders, instead of the top level",
           " (Inbox, etc. will also be created there instead of their corresponding places)") do |toplevel|

@@ -228,6 +228,9 @@ module Things2THL
         exit(1)
       end
 
+      # Regular expression to match context tags. Compile it here to avoid
+      # repetition later on.
+      options.contexttagsregex_compiled = Regexp.compile(options.contexttagsregex)
       # Structure to keep track of already create items
       # These hashes are indexed by Things node ID (node.id_). Each element
       # contains a hash with two elements:
@@ -634,7 +637,15 @@ module Things2THL
         tasktags |= node.area.tags.map {|t| t.name }
       end
       unless tasktags.empty?
-        prop[:title] = [prop[:title], tasktags.map {|t| "/" + t + (t.index(" ")?"/":"") }].join(' ')
+        prop[:title] = [prop[:title], tasktags.map do |t|
+                          if options.contexttagsregex_compiled &&
+                              options.contexttagsregex_compiled.match(t)
+                            # Contexts cannot have spaces, we also remove any initial @'s before adding our own.
+                            "@" + t.gsub(/^@+/, "").gsub(/ /, '_')
+                          else
+                            "/" + t + (t.index(" ")?"/":"")
+                          end
+                        end].join(' ')
       end
     end
 
