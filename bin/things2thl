@@ -5,16 +5,7 @@ require File.join(File.dirname(__FILE__), *%w".. lib Things2THL")
 require "optparse"
 require "ostruct"
 
-# Command line options and defaults    
-options=OpenStruct.new
-options.completed = false
-options.database = nil
-options.structure = :projects_as_lists
-options.areas = true
-options.quiet = false
-options.archivecompleted = true
-options.projectsfolder = nil
-options.contexttagsregex = '^@'
+options=Things2THL.default_options
 opts = OptionParser.new do |opts|
   opts.separator ''
   opts.separator 'Options:'

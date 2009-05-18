@@ -217,7 +217,7 @@ module Things2THL
     attr_accessor :options, :things, :thl
 
     def initialize(opt_struct = nil, things_location = nil, thl_location = nil)
-      @options=opt_struct || OpenStruct.new
+      @options=opt_struct || Things2THL.default_options
       thingsappname=things_location || 'Things'
       thlappname=thl_location || 'The Hit List'
       begin
@@ -703,6 +703,20 @@ module Things2THL
   end #### class Converter
 
   ####################################################################
+
+  # Return a structure with the default option values
+  def Things2THL.default_options
+    options=OpenStruct.new
+    options.completed = false
+    options.database = nil
+    options.structure = :projects_as_lists
+    options.areas = true
+    options.quiet = false
+    options.archivecompleted = true
+    options.projectsfolder = nil
+    options.contexttagsregex = '^@'
+    return options
+  end
 
   def Things2THL.new(opt_struct = nil, things_db = nil, thl_location = nil)
     Converter.new(opt_struct, things_db, thl_location)
