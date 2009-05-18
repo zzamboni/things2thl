@@ -75,13 +75,22 @@ thl = converter.thl
 
 # First, traverse all areas
 if options.areas
+  puts "Processing Areas of Responsibility" unless options.quiet
   things.areas.get.each do |area|
     converter.process(Things2THL::ThingsNode.new(area))
   end
 end
 
 # Next, traverse all projects, putting each one inside its corresponding area
-things.projects.get.each do |project|
+puts "Processing Projects" unless options.quiet
+if options.completed
+  puts "   (fetching all projects - this may take a while)" unless options.quiet
+  projlist=things.projects.get
+else
+  puts "   (fetching only open projects - this may take a while)" unless options.quiet
+  projlist=things.projects[its.status.eq(:open)].get
+end
+projlist.each do |project|
   converter.process(Things2THL::ThingsNode.new(project))
 end
 
@@ -90,7 +99,15 @@ end
 # - to_dos returns not only tasks, also projects (not areas)
 # - to-dos returns tasks from all the views: Inbox, Today, Scheduled, Someday, and Next, so we have
 #   to separate them and create the appropriate containers as needed
-things.to_dos.get.each do |t|
+puts "Processing tasks" unless options.quiet
+if options.completed
+  puts "   (fetching all tasks - this may take a while)" unless options.quiet
+  tasklist=things.to_dos.get
+else
+  puts "   (fetching only open tasks - this may take a while)" unless options.quiet
+  tasklist=things.to_dos[its.status.eq(:open)].get
+end
+tasklist.each do |t|
   task=Things2THL::ThingsNode.new(t)
   next if task.type != :selected_to_do
   converter.process(task)
