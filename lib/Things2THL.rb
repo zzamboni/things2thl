@@ -12,7 +12,7 @@ module Things2THL
   module Version
     MAJOR  = 0
     MINOR  = 2
-    PATH   = 1
+    PATCH  = 2
 
     STRING = [MAJOR, MINOR, PATCH].join(".")
   end
