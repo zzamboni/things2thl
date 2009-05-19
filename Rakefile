@@ -10,6 +10,7 @@ begin
     gemspec.homepage = "http://zzamboni.github.com/things2thl/"
     gemspec.description = "Library and command-line tool for migrating Things data to The Hit List"
     gemspec.authors = ["Diego Zamboni"]
+    gemspec.add_dependency('rb-appscript', '>=0.5.1')
   end
 rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"

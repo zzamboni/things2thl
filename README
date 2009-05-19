@@ -13,11 +13,13 @@ INSTALL:
 You need Things 1.1.1 or later, since things2thl requires Applescript
 support.
 
-You need to install rb-appscript from
-http://appscript.sourceforge.net/rb-appscript/install.html
-
 Then install things2thl by running:
      $ sudo gem install zzamboni-things2thl --source http://gems.github.com/
+
+Note: things2thl need the rb-appscript library from
+http://appscript.sourceforge.net/rb-appscript/install.html. If you
+don't have it already, it will be automatically installed by gem.
+
 
 
 USAGE:
@@ -26,26 +28,38 @@ USAGE:
 Usage: things2thl [options]
 
 Options:
-        --projects-as-lists          Convert projects in Things to lists in THL (default)
-        --projects-as-tasks          Convert projects in Things to tasks in THL
+    -L, --projects-as-lists          Convert projects in Things to lists in THL
+                                      (default)
+    -T, --projects-as-tasks          Convert projects in Things to tasks in THL
         --[no-]areas                 Transfer areas from Things (default: yes)
-    -C, --context-tags-regex REGEX   Regular expression to identify tags that should be interpreted as contexts.
+    -C, --context-tags-regex REGEX   Regular expression to identify tags that
+                                       should be interpreted as contexts.
                                        (default: ^@)
-        --top-level-folder FOLDER    If specified, do the import inside the named folders, instead of the top level
-                                      (Inbox, etc. will also be created there instead of their corresponding places)
-        --projects-folder FOLDER     If specified, the named folder will be created to contain all projects when
-                                       --projects-as-lists is used (otherwise they will be put in the top folders group).
-                                       If --projects-as-tasks is used, a 'Projects' list is always created, but this option
-                                       can be used to specify its name.
-    -c, --completed                  Transfer also completed/canceled tasks and projects (default: no)
-        --[no-]archive-completed     If transferring completed/canceled tasks, also mark them as archived (default: yes)
+        --top-level-folder FOLDER    Do the import inside the named folders,
+                                       instead of the top level
+                                       (Inbox, etc. will also be created there
+                                       instead of their corresponding places)
+        --projects-folder FOLDER     The named folder will be created to
+                                       contain all projects when
+                                       --projects-as-lists is used (otherwise
+                                       they will be in the top folders group).
+                                       If --projects-as-tasks is used, a
+                                       'Projects' list is always created, but
+                                       this option can be used to specify
+                                       its name.
+    -c, --completed                  Transfer also completed/canceled tasks
+                                       and projects (default: no)
+        --[no-]archive-completed     If transferring completed/canceled tasks,
+                                       also mark them as archived (default: yes)
     -q, --quiet                      Do not print items as they are processed
     -h, --help                       Shows this help message
     -v, --version                    Shows version
 
 Options you should seldom need:
-        --things THINGSAPP           Location of the Things application (default: /Applications/Things.app)
-        --thl THLAPP                 Location of the The Hit List application (default: /Applications/The Hit List.app)
+        --things THINGSAPP           Location of the Things application
+                                       (default: /Applications/Things.app)
+        --thl THLAPP                 Location of the The Hit List application
+                                       (default: /Applications/The Hit List.app)
 
 
 Functionality still missing:
