@@ -373,7 +373,9 @@ module Things2THL
                      nil
                    when 'Inbox', 'Next'
                      find_or_create(:list, focusname, top_level_node)
-                   when 'Scheduled', 'Someday', 'Logbook'
+                   when 'Scheduled', 'Logbook'
+                     find_or_create((options.structure == :projects_as_tasks) ? :list : :folder, focusname, top_level_node)
+                   when 'Someday'
                      find_or_create(:folder, focusname, top_level_node)
                    when 'Projects'
                      if options.structure == :projects_as_tasks
@@ -396,7 +398,9 @@ module Things2THL
                      thl.inbox.get
                    when 'Next'
                      top_level_node
-                   when 'Scheduled', 'Someday', 'Logbook'
+                   when 'Scheduled', 'Logbook'
+                     find_or_create((options.structure == :projects_as_tasks) ? :list : :folder, focusname, top_level_node)
+                   when 'Someday'
                      find_or_create(:folder, focusname, top_level_node)
                    when 'Projects'
                      if options.structure == :projects_as_tasks
