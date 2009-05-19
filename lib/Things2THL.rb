@@ -750,7 +750,7 @@ module Things2THL
     options=OpenStruct.new
     options.completed = false
     options.database = nil
-    options.structure = :projects_as_lists
+    options.structure = nil
     options.areas = true
     options.quiet = false
     options.archivecompleted = true

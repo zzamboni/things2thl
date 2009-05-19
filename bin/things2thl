@@ -7,23 +7,28 @@ require "ostruct"
 
 options=Things2THL.default_options
 opts = OptionParser.new do |opts|
-  opts.separator ''
-  opts.separator 'Options:'
-  
-  opts.banner = "Usage: things2thl [options]"
+
+  opts.banner = "Usage: things2thl <mode of operation> [options]"
   
   def opts.show_usage
     puts self
     exit  
   end
   
-  opts.on("-L", "--projects-as-lists", "Convert projects in Things to lists in THL", ((options.structure == :projects_as_lists) ? " (default)" : "") ) { options.structure = :projects_as_lists }
-  opts.on("-T", "--projects-as-tasks", "Convert projects in Things to tasks in THL" + ((options.structure == :projects_as_tasks) ? " (default)" : "") ) { options.structure = :projects_as_tasks }
+  opts.separator ''
+  opts.separator("Modes of operation (required):")
+  opts.on("-L", "--projects-as-lists",
+          "Convert projects in Things to lists in THL" ) { options.structure = :projects_as_lists }
+  opts.on("-T", "--projects-as-tasks",
+          "Convert projects in Things to tasks in THL" ) { options.structure = :projects_as_tasks }
+
+  opts.separator ''
+  opts.separator("Options:")
   opts.on("--[no-]areas", "Transfer areas from Things (default: #{options.areas ? 'yes' : 'no'})") { |v| options.areas = v }
   opts.on('--[no-]time-tags',
           'Consider tags of the form Xmin/Xsec/Xhr as',
-          '  time estimates, set them in THL accordingly',
-          "  (default: #{options.timetags ? 'yes' : 'no'}).") do |value|
+          '  time estimates, set them in THL',
+          "  accordingly (default: #{options.timetags ? 'yes' : 'no'}).") do |value|
     options.timetags = value
   end
   opts.on('--[no-]context-tags [REGEX]',
@@ -37,7 +42,7 @@ opts = OptionParser.new do |opts|
           "  (Inbox, etc. will also be created there","  instead of their corresponding places)") do |toplevel|
     options.toplevel = toplevel
   end
-  opts.on("--projects-folder FOLDER",
+  opts.on("--projects-top-level FOLDER",
           "The named folder will be created to",
           "  contain all projects when",
           "  --projects-as-lists is used (otherwise",
@@ -86,7 +91,11 @@ end
 ######################################################################
 
 opts.parse!
-#opts.show_usage unless options.key?(:focus)
+unless options.structure
+  puts "Error: you didn't specify the mode of operation to use."
+  puts ''
+  opts.show_usage 
+end
 
 converter = Things2THL.new(options, options.thingsapp, options.thlapp)
 things = converter.things
