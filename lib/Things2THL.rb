@@ -64,6 +64,7 @@ module Things2THL
                               :due_date => :due_date,
                               :completion_date => :completed_date,
                               :cancellation_date => :canceled_date,
+                              :activation_date => :start_date,
                               :status => {
                                 :completed => :completed,
                                 :canceled  => :canceled,
@@ -90,6 +91,7 @@ module Things2THL
                        :due_date => :due_date,
                        :completion_date => :completed_date,
                        :cancellation_date => :canceled_date,
+                       :activation_date => :start_date,
                        :status => {
                          :completed => :completed,
                          :canceled  => :canceled,
@@ -109,6 +111,7 @@ module Things2THL
                               :due_date => :due_date,
                               :completion_date => :completed_date,
                               :cancellation_date => :canceled_date,
+                              :activation_date => :start_date,
                               :status => {
                                 :completed => :completed,
                                 :canceled  => :canceled,
