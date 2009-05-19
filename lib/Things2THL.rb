@@ -73,7 +73,7 @@ module Things2THL
                             Proc.new {|node,prop,obj|
                               obj.fix_completed_canceled(node, prop)
                               obj.archive_completed(prop)
-                              obj.add_tags(node, prop, true, true)
+                              obj.process_tags(node, prop, true, true)
                               obj.check_today(node, prop)
                             }
                            ]
@@ -99,7 +99,7 @@ module Things2THL
                      Proc.new {|node,prop,obj|
                        obj.fix_completed_canceled(node, prop)
                        obj.archive_completed(prop)
-                       obj.add_tags(node, prop, false, true)
+                       obj.process_tags(node, prop, false, true)
                      }
                     ],
         :selected_to_do => [:task,
@@ -118,7 +118,7 @@ module Things2THL
                             Proc.new {|node,prop,obj|
                               obj.fix_completed_canceled(node, prop)
                               obj.archive_completed(prop)
-                              obj.add_tags(node, prop, false, true)
+                              obj.process_tags(node, prop, false, true)
                               obj.check_today(node, prop)
                             }
                            ]
@@ -130,6 +130,14 @@ module Things2THL
       :folder => :name,
       :list => :name,
       :task => :title
+    }
+
+    # Time units for time-estimate tags
+    TIMEUNITS = {
+      "sec" => 1,
+      "min" => 60,
+      "hr"  => 60*60,
+      "hour" => 60*60,
     }
 
   end ### module Constants
@@ -230,7 +238,10 @@ module Things2THL
 
       # Regular expression to match context tags. Compile it here to avoid
       # repetition later on.
-      options.contexttagsregex_compiled = Regexp.compile(options.contexttagsregex)
+      options.contexttagsregex_compiled = Regexp.compile(options.contexttagsregex) if options.contexttagsregex
+      # Regular expression to match time-estimate tags. Compile it here to avoid
+      # repetition later on.
+      options.timetagsregex_compiled = Regexp.compile(options.timetagsregex) if options.timetagsregex
       # Structure to keep track of already create items
       # These hashes are indexed by Things node ID (node.id_). Each element
       # contains a hash with two elements:
@@ -621,8 +632,8 @@ module Things2THL
       prop[:archived] = true if options.archivecompleted && (prop[:completed] || prop[:canceled])
     end
 
-    # Add tags to title
-    def add_tags(node, prop, inherit_project_tags, inherit_area_tags)
+    # Process tags
+    def process_tags(node, prop, inherit_project_tags, inherit_area_tags)
       tasktags = node.tags.map {|t| t.name }
       if inherit_project_tags
         # Merge project and area tags
@@ -637,6 +648,36 @@ module Things2THL
         tasktags |= node.area.tags.map {|t| t.name }
       end
       unless tasktags.empty?
+        # First process time-estimate tags if needed
+        if options.timetags
+          # Valid time tags will be deleted from the tags list
+          tasktags=tasktags.delete_if do |t|
+            if data=options.timetagsregex_compiled.match(t)
+              timeestimate = nil
+              # If the regex includes only one group, it is assumed to be
+              # the time in minutes. If it includes two groups, the second
+              # group specifies the time unit, as defined in Constants::TIMEUNITS
+              case data.size
+              when 0
+                puts "Invalid time tags regex, does not return any groups: #{options.timetagsregex_compiled.to_s}"
+              when 1
+                # Assumed to be in minutes, timeestimate is in seconds
+                timeestimate = data[1].to_i * 60
+              else
+                # Second one is the units - the rest are ignored
+                timeunit=Constants::TIMEUNITS[data[2]]
+                if !timeunit
+                  puts "Invalid time estimate tag, I could not match the time unit: '#{t}'"
+                else 
+                  timeestimate = data[1].to_i * timeunit
+                end
+              end
+              if timeestimate
+                prop[:estimated_time] = timeestimate
+              end
+            end
+          end
+        end
         prop[:title] = [prop[:title], tasktags.map do |t|
                           if options.contexttagsregex_compiled &&
                               options.contexttagsregex_compiled.match(t)
@@ -715,6 +756,8 @@ module Things2THL
     options.archivecompleted = true
     options.projectsfolder = nil
     options.contexttagsregex = '^@'
+    options.timetagsregex = '^(\d+)(min|sec|hr)$'
+    options.timetags = false
     return options
   end
 
