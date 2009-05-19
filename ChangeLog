@@ -1,6 +1,45 @@
 2009-05-19  Diego Zamboni <diego@zzamboni.org>
 
-	* VERSION, lib/Things2THL.rb: Version bump to 0.4.0
+	* things2thl.gemspec: Regenerated gemspec for version 0.4.3
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* lib/Things2THL.rb: Updated version number
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.4.3
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* README, Rakefile, lib/Things2THL.rb: Updated documentation, added
+	rb-appscript dependency
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.4.2
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl: Reformatted usage message to fit in an 80-column
+	window
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.4.1
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.4.1
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.4.0
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* ChangeLog, README, VERSION, lib/Things2THL.rb: Version bump to
+	0.4.0, added ChangeLog Updated README file
 
 2009-05-19  Diego Zamboni <diego@zzamboni.org>
 
@@ -29,6 +68,31 @@
 
 2009-05-18  Diego Zamboni <diego@zzamboni.org>
 
+	* VERSION, things2thl.gemspec: Version bump to 0.2.2
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION, lib/Things2THL.rb, things2thl.gemspec: Version bump to
+	0.2.1
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION, things2thl.gemspec: Version bump to 0.2.0
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.3.0
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* lib/Things2THL.rb: Bumped version number to 0.3.0
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.3.0
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
 	* bin/things2thl, lib/Things2THL.rb: Added option
 	--context-tags-regex (-C) for specifying which Things tags should be
 	considered as contexts when moving to THL. By default its value is
@@ -44,7 +108,7 @@
 
 2009-05-18  Diego Zamboni <diego@zzamboni.org>
 
-	* VERSION, things2thl.gemspec: Version bump to 0.2.2
+	* things2thl.gemspec: Regenerated gemspec for version 0.2.2
 
 2009-05-18  Diego Zamboni <diego@zzamboni.org>
 
@@ -52,12 +116,28 @@
 
 2009-05-18  Diego Zamboni <diego@zzamboni.org>
 
-	* VERSION, lib/Things2THL.rb, things2thl.gemspec: Version bump to
-	0.2.1
+	* VERSION: Version bump to 0.2.2
 
 2009-05-18  Diego Zamboni <diego@zzamboni.org>
 
-	* VERSION, things2thl.gemspec: Version bump to 0.2.0
+	* things2thl.gemspec: Regenerated gemspec for version 0.2.1
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* lib/Things2THL.rb: Bumped script version number to match gem
+	version
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.2.1
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.2.0
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.2.0
 
 2009-05-18  Diego Zamboni <diego@zzamboni.org>
 
