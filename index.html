@@ -22,7 +22,7 @@
       h1 .small { font-size: 0.4em; }
       h1 a { text-decoration: none }
       h2 { font-size: 1.5em; color: #2a6cf1; }
-      h3 { text-align: center; color: #2a6cf1; }
+      h3 { color: #2a6cf1; }
       a { color: #2a6cf1; }
       .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
       .download { float: right; }
@@ -61,24 +61,121 @@
 	allows you to transfer all your areas, project, tasks and tags, so
 	that you can use THL with real data.</p>
 
-      <h2>Install</h2>
-      <p>You can install things2thl as a gem package by running the following command:
+      <h2>Installation</h2>
+
+      <p>You need Things 1.1.1 or later, since things2thl
+      requires <a href="http://culturedcode.com/things/blog/2009/05/things-11-brings-extensive-applescript-support.html">Applescript
+      support</a>. things2thl has been tested with Things 1.1.2 and
+      The Hit List 0.9.3.13beta.</p>
+
+      <p>You can install things2thl as a gem package by running the
+      following command in the terminal:
 	<pre>$ sudo gem install zzamboni-things2thl --source http://gems.github.com/</pre>
       </p>
 
+      <p>Note: things2thl needs
+      the <a href="http://appscript.sourceforge.net/rb-appscript/">rb-appscript
+      library</a>. If you don't have it already, it will be
+      automatically installed by gem.</p>
+
       <h2>Usage</h2>
 
-      <p>For a help summary, run:
-	<pre>$ things2thl --help</pre>
-      </p>
+      <p>things2thl is a command-line program.</p>
+
+      <pre>$ things2thl -h
+
+Usage: things2thl [options]
+
+Options:
+    -L, --projects-as-lists          Convert projects in Things to lists in THL
+                                      (default)
+    -T, --projects-as-tasks          Convert projects in Things to tasks in THL
+        --[no-]areas                 Transfer areas from Things (default: yes)
+    -C, --context-tags-regex REGEX   Regular expression to identify tags that
+                                       should be interpreted as contexts.
+                                       (default: ^@)
+        --top-level-folder FOLDER    Do the import inside the named folders,
+                                       instead of the top level
+                                       (Inbox, etc. will also be created there
+                                       instead of their corresponding places)
+        --projects-folder FOLDER     The named folder will be created to
+                                       contain all projects when
+                                       --projects-as-lists is used (otherwise
+                                       they will be in the top folders group).
+                                       If --projects-as-tasks is used, a
+                                       'Projects' list is always created, but
+                                       this option can be used to specify
+                                       its name.
+    -c, --completed                  Transfer also completed/canceled tasks
+                                       and projects (default: no)
+        --[no-]archive-completed     If transferring completed/canceled tasks,
+                                       also mark them as archived (default: yes)
+    -q, --quiet                      Do not print items as they are processed
+    -h, --help                       Shows this help message
+    -v, --version                    Shows version
+
+Options you should seldom need:
+        --things THINGSAPP           Location of the Things application
+                                       (default: /Applications/Things.app)
+        --thl THLAPP                 Location of the The Hit List application
+                                       (default: /Applications/The Hit List.app)</pre>
 
       (more information coming later)
+
+      <h2>Issues, plans and feedback</h2>
+
+      <h3>Missing functionality</h3>
+
+      <ul>
+	<li> Handle rich-text notes (with attachments, links, etc.) properly.
+
+	  <p>Plan: not sure yet. Need to investigate how notes are stored in
+	    THL (Things uses an XML format)</p>
+	</li>
+	<li> Handling delegation ("People" feature in Things)
+
+	  <p>Not sure how to transfer this to THL. Ideas are welcome.</p>
+	</li>
+	<li> Handle "time estimate" tags.
+
+	  <p>Plan: Allow specifying certain Things tags (e.g. I use "10min",
+	    "30min", "60min") that should be used to set the time estimate for
+	    the task in THL.</p>
+	</li>
+
+	<li><p>Maybe create a graphical interface around it?</p></li>
+
+	<li><p>Improve performance</p></li>
+      </ul>
+
+      <h3>Known issues</h3>
+
+      <ul>
+	<li> Cancellation/completion dates are not transferred, because THL
+	  handles those attributes as read-only. So if you choose to
+	  transfer completed/canceled tasks, they will all appear in
+	  your "completed today" view.</li>
+
+	<li> Tasks in the Things "Scheduled" focus are transferred, but the
+	  scheduling itself is not transferred, because this
+	  information is not accessible through AS from either Things
+	  not THL.</li>
+      </uL>
+
+      <h3>Feedback</h3>
+
+      <p>If you have any feedback, feel free to contact me (see
+      below), or open a
+      new <a href="http://github.com/zzamboni/things2thl/issues">issue
+      on GitHub</a>, which allows me to keep better track of them.</p>
 
       <h2>License</h2>
       <p>This code is made available under the <a href="http://creativecommons.org/licenses/BSD/">BSD license</a>.</p>
 
       <h2>Author</h2>
-      <p>Diego Zamboni (diego@zzamboni.org)<br/><br/></p>
+      <p>Diego Zamboni
+      (<a href="mailto:diego@zzamboni.org">diego@zzamboni.org</a>)<br/>
+	<a href="http://twitter.com/zzamboni/">@zzamboni</a> on Twitter.</p>
 
       <h2>Download</h2>
 
