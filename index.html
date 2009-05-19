@@ -84,21 +84,26 @@
 
       <pre>$ things2thl -h
 
-Usage: things2thl [options]
+Usage: things2thl &lt;mode of operation&gt; [options]
+
+Modes of operation (required):
+    -L, --projects-as-lists          Convert projects in Things to lists in THL
+    -T, --projects-as-tasks          Convert projects in Things to tasks in THL
 
 Options:
-    -L, --projects-as-lists          Convert projects in Things to lists in THL
-                                      (default)
-    -T, --projects-as-tasks          Convert projects in Things to tasks in THL
         --[no-]areas                 Transfer areas from Things (default: yes)
-    -C, --context-tags-regex REGEX   Regular expression to identify tags that
+        --[no-]time-tags             Consider tags of the form Xmin/Xsec/Xhr as
+                                       time estimates, set them in THL
+                                       accordingly (default: no).
+        --[no-]context-tags [REGEX]  Regular expression to identify tags that
                                        should be interpreted as contexts.
-                                       (default: ^@)
+                                       (default: ^@).
+                                       Use with no- to disable this feature.
         --top-level-folder FOLDER    Do the import inside the named folders,
                                        instead of the top level
                                        (Inbox, etc. will also be created there
                                        instead of their corresponding places)
-        --projects-folder FOLDER     The named folder will be created to
+        --projects-top-level FOLDER  The named folder will be created to
                                        contain all projects when
                                        --projects-as-lists is used (otherwise
                                        they will be in the top folders group).
@@ -118,7 +123,8 @@ Options you should seldom need:
         --things THINGSAPP           Location of the Things application
                                        (default: /Applications/Things.app)
         --thl THLAPP                 Location of the The Hit List application
-                                       (default: /Applications/The Hit List.app)</pre>
+                                       (default: /Applications/The Hit List.app)
+</pre>
 
       (more information coming later)
 
@@ -136,13 +142,6 @@ Options you should seldom need:
 
 	  <p>Not sure how to transfer this to THL. Ideas are welcome.</p>
 	</li>
-	<li> Handle "time estimate" tags.
-
-	  <p>Plan: Allow specifying certain Things tags (e.g. I use "10min",
-	    "30min", "60min") that should be used to set the time estimate for
-	    the task in THL.</p>
-	</li>
-
 	<li><p>Maybe create a graphical interface around it?</p></li>
 
 	<li><p>Improve performance</p></li>
@@ -160,6 +159,10 @@ Options you should seldom need:
 	  scheduling itself is not transferred, because this
 	  information is not accessible through AS from either Things
 	  not THL.</li>
+
+	<li> The format of time estimate tags is fixed for the
+	moment. May add customization if I get any requests for
+	it.</li>
       </uL>
 
       <h3>Feedback</h3>
