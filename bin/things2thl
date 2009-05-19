@@ -17,27 +17,36 @@ opts = OptionParser.new do |opts|
     exit  
   end
   
-  opts.on("--projects-as-lists", "Convert projects in Things to lists in THL" + ((options.structure == :projects_as_lists) ? " (default)" : "") ) { options.structure = :projects_as_lists }
-  opts.on("--projects-as-tasks", "Convert projects in Things to tasks in THL" + ((options.structure == :projects_as_tasks) ? " (default)" : "") ) { options.structure = :projects_as_tasks }
+  opts.on("-L", "--projects-as-lists", "Convert projects in Things to lists in THL", ((options.structure == :projects_as_lists) ? " (default)" : "") ) { options.structure = :projects_as_lists }
+  opts.on("-T", "--projects-as-tasks", "Convert projects in Things to tasks in THL" + ((options.structure == :projects_as_tasks) ? " (default)" : "") ) { options.structure = :projects_as_tasks }
   opts.on("--[no-]areas", "Transfer areas from Things (default: #{options.areas ? 'yes' : 'no'})") { |v| options.areas = v }
-  opts.on('-C REGEX', '--context-tags-regex REGEX', 'Regular expression to identify tags that should be interpreted as contexts.',
+  opts.on('-C REGEX', '--context-tags-regex REGEX', 'Regular expression to identify tags that','  should be interpreted as contexts.',
           "  (default: #{options.contexttagsregex})") do |regex|
     options.contexttagsregex = regex
   end
 
-  opts.on("--top-level-folder FOLDER", "If specified, do the import inside the named folders, instead of the top level",
-          " (Inbox, etc. will also be created there instead of their corresponding places)") do |toplevel|
+  opts.on("--top-level-folder FOLDER", "Do the import inside the named folders,","  instead of the top level",
+          "  (Inbox, etc. will also be created there","  instead of their corresponding places)") do |toplevel|
     options.toplevel = toplevel
   end
-  opts.on("--projects-folder FOLDER", "If specified, the named folder will be created to contain all projects when",
-          "  --projects-as-lists is used (otherwise they will be put in the top folders group).",
-          "  If --projects-as-tasks is used, a 'Projects' list is always created, but this option",
-          "  can be used to specify its name.") do |projfolder|
+  opts.on("--projects-folder FOLDER",
+          "The named folder will be created to",
+          "  contain all projects when",
+          "  --projects-as-lists is used (otherwise",
+          "  they will be in the top folders group).",
+          "  If --projects-as-tasks is used, a",
+          "  'Projects' list is always created, but",
+          "  this option can be used to specify",
+          "  its name.") do |projfolder|
     options.projectsfolder = projfolder
   end
 
-  opts.on("-c", "--completed", "Transfer also completed/canceled tasks and projects (default: #{options.completed ? 'yes' : 'no'})") { options.completed = true }
-  opts.on("--[no-]archive-completed", "If transferring completed/canceled tasks, also mark them as archived (default: #{options.archivecompleted ? 'yes' : 'no'})") {|v| options.archivecompleted = v }
+  opts.on("-c", "--completed",
+          "Transfer also completed/canceled tasks",
+          "  and projects (default: #{options.completed ? 'yes' : 'no'})") { options.completed = true }
+  opts.on("--[no-]archive-completed",
+          "If transferring completed/canceled tasks,",
+          "  also mark them as archived (default: #{options.archivecompleted ? 'yes' : 'no'})") {|v| options.archivecompleted = v }
   opts.on("-q", "--quiet", "Do not print items as they are processed") { options.quiet = true }
 #  opts.on("-n", "--dry-run", "Do not create anything in THL, just print the items that would be created") { options.dryrun = true }
 #  opts.on("-n", "--notes", "Shows only tasks with notes") { options[:tasks] = { :onlynotes => true } }
@@ -51,10 +60,14 @@ opts = OptionParser.new do |opts|
 
   opts.separator("")
   opts.separator("Options you should seldom need:")
-  opts.on("--things THINGSAPP", "Location of the Things application (default: /Applications/Things.app)") do |things|    
+  opts.on("--things THINGSAPP",
+          "Location of the Things application",
+          "  (default: /Applications/Things.app)") do |things|    
     options.thingsapp = things
   end
-  opts.on("--thl THLAPP", "Location of the The Hit List application (default: /Applications/The Hit List.app)") do |thl|
+  opts.on("--thl THLAPP",
+          "Location of the The Hit List application",
+          "  (default: /Applications/The Hit List.app)") do |thl|
     options.thlapp = thl
   end
   
