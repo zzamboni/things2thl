@@ -1,5 +1,38 @@
 2009-05-19  Diego Zamboni <diego@zzamboni.org>
 
+	* lib/Things2THL.rb: Version bump to 0.5.0
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl, lib/Things2THL.rb: Made it mandatory to specify
+	the mode of operation (--projects-as-lists or --projects-as-tasks).
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl, lib/Things2THL.rb: Added --[no-]time-tags option,
+	which allows time-estimate tags in Things for the form Xsec/Xmin/Xhr
+	(e.g. I use "10min", "30min", "60min") to be converted to the
+	appropriate time estimate attribute of the tasks in THL. For now the
+	format of the time-estimate tags is fixed, but I might add
+	customization if I someone asks for it. This option is disabled by
+	default.  Also changed the --context-tags-regex option to be
+	--[no-]context-tags, which allows both specifying the regex and
+	(with --no-) disabling the feature in a single option.
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.4.4
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.4.4
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* ChangeLog, lib/Things2THL.rb: Updated ChangeLog
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
 	* things2thl.gemspec: Regenerated gemspec for version 0.4.3
 
 2009-05-19  Diego Zamboni <diego@zzamboni.org>
