@@ -1,6 +1,39 @@
+2009-05-20  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.6.0
+
+2009-05-20  Diego Zamboni <diego@zzamboni.org>
+
+	* Rakefile, lib/Things2THL.rb: Vastly improved conversion of the
+	notes field. The HTML stored in the Things notes is parsed and
+	rendered as text, including all the appropriate URLs and links. It
+	does not look exactly as the original, but is quite usable.
+
 2009-05-19  Diego Zamboni <diego@zzamboni.org>
 
-	* lib/Things2THL.rb: Version bump to 0.5.0
+	* README: Updated to state limitation of transferring repeating
+	tasks.
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* lib/Things2THL.rb: Make Scheduled and Logbook a list instead of a
+	folder when --projects-as-tasks. Someday stays always as a folder,
+	because it can contain areas (suspended areas)
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* lib/Things2THL.rb: Transfer activation_date as start_date so that
+	scheduled (one-time) tasks are set appropriately. Still need to
+	figure out how to identify repeating tasks.
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.5.0
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* ChangeLog, README, VERSION, lib/Things2THL.rb: Version bump to
+	0.5.0
 
 2009-05-19  Diego Zamboni <diego@zzamboni.org>
 
