@@ -21,6 +21,10 @@ opts = OptionParser.new do |opts|
           "Convert projects in Things to lists in THL" ) { options.structure = :projects_as_lists }
   opts.on("-T", "--projects-as-tasks",
           "Convert projects in Things to tasks in THL" ) { options.structure = :projects_as_tasks }
+  opts.on("-B", "--projects-areas-as-tasks",
+          "Convert both projects and areas in Things",
+          "  to lists in THL. This implies that",
+          "  projects are not nested inside areas.") { options.structure = :projects_areas_as_lists }
 
   opts.separator ''
   opts.separator("Options:")

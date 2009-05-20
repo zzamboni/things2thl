@@ -126,6 +126,43 @@ module Things2THL
                               obj.check_today(node, prop)
                             }
                            ]
+      },
+      :projects_areas_as_lists => {
+        :area => [:list,
+                  {
+                    :name => :name,
+                  }],
+        :project => [:list,
+                     {
+                       :name => :name,
+                       :creation_date => :created_date,
+                     },
+                     Proc.new {|node,prop,obj|
+                       obj.add_list_notes(node,prop)
+                       obj.add_project_duedate(node,prop)
+                     }
+                    ],
+        :selected_to_do => [:task,
+                            {
+                              :name => :title,
+                              :creation_date => :created_date,
+                              :due_date => :due_date,
+                              :completion_date => :completed_date,
+                              :cancellation_date => :canceled_date,
+                              :activation_date => :start_date,
+                              :status => {
+                                :completed => :completed,
+                                :canceled  => :canceled,
+                              },
+                            },
+                            Proc.new {|node,prop,obj|
+                              obj.add_notes(node,prop)
+                              obj.fix_completed_canceled(node, prop)
+                              obj.archive_completed(prop)
+                              obj.process_tags(node, prop, true, true)
+                              obj.check_today(node, prop)
+                            }
+                           ]
       }
     }
 
@@ -263,7 +300,13 @@ module Things2THL
     # Get the type of the THL node that corresponds to the given Things node,
     # depending on the options specified
     def thl_node_type(node)
-      Constants::STRUCTURES[options.structure][node.type][0]
+      case node
+      when Symbol
+        type=node
+      else
+        type=node.type
+      end
+      Constants::STRUCTURES[options.structure][type][0]
     end
 
     # Get the name/title for a THL node.
@@ -375,11 +418,11 @@ module Things2THL
                    when 'Inbox', 'Next'
                      find_or_create(:list, focusname, top_level_node)
                    when 'Scheduled', 'Logbook'
-                     find_or_create((options.structure == :projects_as_tasks) ? :list : :folder, focusname, top_level_node)
+                     find_or_create((thl_node_type(:project) == :task) ? :list : :folder, focusname, top_level_node)
                    when 'Someday'
                      find_or_create(:folder, focusname, top_level_node)
                    when 'Projects'
-                     if options.structure == :projects_as_tasks
+                     if thl_node_type(:project) == :task
                        find_or_create(:list, options.projectsfolder || 'Projects', top_level_node)
                      else
                        if options.projectsfolder
@@ -400,11 +443,11 @@ module Things2THL
                    when 'Next'
                      top_level_node
                    when 'Scheduled', 'Logbook'
-                     find_or_create((options.structure == :projects_as_tasks) ? :list : :folder, focusname, top_level_node)
+                     find_or_create((thl_node_type(:project) == :task) ? :list : :folder, focusname, top_level_node)
                    when 'Someday'
                      find_or_create(:folder, focusname, top_level_node)
                    when 'Projects'
-                     if options.structure == :projects_as_tasks
+                     if thl_node_type(:project) == :task
                        find_or_create(:list, options.projectsfolder || 'Projects', top_level_node)
                      else
                        if options.projectsfolder
@@ -479,7 +522,6 @@ module Things2THL
     # we need to find or create an auxiliary list to contain it.
     def container_for(node)
       # If its top-level container is nil, it means we need to skip this node
-      # unless it's an area, areas don't have a focus
       tlcontainer=top_level_for_node(node)
       return nil unless tlcontainer
 
@@ -488,7 +530,7 @@ module Things2THL
                   when :area
                     tlcontainer
                   when :project
-                    if options.areas && node.area?
+                    if options.areas && (options.structure != :projects_areas_as_lists)  && node.area?
                       get_cached_or_process(node.area)
                     else
                       tlcontainer

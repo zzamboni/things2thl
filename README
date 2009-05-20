@@ -1,4 +1,4 @@
-Things2THL
+Things2THL 0.7.0
 http://zzamboni.github.com/things2thl/
 
 Conversion program to transfer data from Things
@@ -32,6 +32,9 @@ Usage: things2thl <mode of operation> [options]
 Modes of operation (required):
     -L, --projects-as-lists          Convert projects in Things to lists in THL
     -T, --projects-as-tasks          Convert projects in Things to tasks in THL
+    -B, --projects-areas-as-tasks    Convert both projects and areas in Things
+                                       to lists in THL. This implies that
+                                       projects are not nested inside areas.
 
 Options:
         --[no-]areas                 Transfer areas from Things (default: yes)
@@ -54,6 +57,8 @@ Options:
                                        'Projects' list is always created, but
                                        this option can be used to specify
                                        its name.
+        --areas-top-level FOLDER     The named folder will be created to
+                                       contain all areas.
     -c, --completed                  Transfer also completed/canceled tasks
                                        and projects (default: no)
         --[no-]archive-completed     If transferring completed/canceled tasks,
@@ -67,7 +72,6 @@ Options you should seldom need:
                                        (default: /Applications/Things.app)
         --thl THLAPP                 Location of the The Hit List application
                                        (default: /Applications/The Hit List.app)
-
 
 Functionality still missing:
 ---------------------------
