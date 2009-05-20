@@ -48,7 +48,7 @@
 	      -->
       
       <h1><a href="http://github.com/zzamboni/things2thl">things2thl</a>
-	<span class="small"> <a href="http://github.com/zzamboni/things2thl/blob/d584e498f7c9b08a8b6d85ae21b79b81153aaa85/ChangeLog">v0.6.0</a></span></h1>
+	<span class="small"> <a href="http://github.com/zzamboni/things2thl/blob/d584e498f7c9b08a8b6d85ae21b79b81153aaa85/ChangeLog">v0.7.0</a></span></h1>
 
       <div class="description">
 	Things to The Hit List converter
@@ -86,11 +86,14 @@
 
       <pre>$ things2thl -h
 
-Usage: things2thl &lt;mode of operation&gt; [options]
+Usage: things2thl <mode of operation> [options]
 
 Modes of operation (required):
     -L, --projects-as-lists          Convert projects in Things to lists in THL
     -T, --projects-as-tasks          Convert projects in Things to tasks in THL
+    -B, --projects-areas-as-tasks    Convert both projects and areas in Things
+                                       to lists in THL. This implies that
+                                       projects are not nested inside areas.
 
 Options:
         --[no-]areas                 Transfer areas from Things (default: yes)
@@ -113,6 +116,8 @@ Options:
                                        'Projects' list is always created, but
                                        this option can be used to specify
                                        its name.
+        --areas-top-level FOLDER     The named folder will be created to
+                                       contain all areas.
     -c, --completed                  Transfer also completed/canceled tasks
                                        and projects (default: no)
         --[no-]archive-completed     If transferring completed/canceled tasks,
@@ -173,7 +178,7 @@ Options you should seldom need:
       <p>This code is made available under the <a href="http://creativecommons.org/licenses/BSD/">BSD license</a>.</p>
 
       <h2>Author</h2>
-      <p>Diego Zamboni
+      <p><a href="http://zzamboni.org/brt/">Diego Zamboni</a>
       (<a href="mailto:diego@zzamboni.org">diego@zzamboni.org</a>)<br/>
 	<a href="http://twitter.com/zzamboni/">@zzamboni</a> on Twitter.</p>
 
