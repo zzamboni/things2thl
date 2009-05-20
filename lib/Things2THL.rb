@@ -434,7 +434,11 @@ module Things2THL
         if node.suspended
           return top_level_for_focus('Someday')
         else
-          return top_level_node
+          if options.areasfolder
+            return find_or_create(:folder, options.areasfolder || 'Areas', top_level_node)
+          else
+            return top_level_node
+          end
         end
       end
 
@@ -792,6 +796,7 @@ module Things2THL
     options.quiet = false
     options.archivecompleted = true
     options.projectsfolder = nil
+    options.areasfolder = nil
     options.contexttagsregex = '^@'
     options.timetagsregex = '^(\d+)(min|sec|hr)$'
     options.timetags = false

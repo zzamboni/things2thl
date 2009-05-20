@@ -53,6 +53,11 @@ opts = OptionParser.new do |opts|
           "  its name.") do |projfolder|
     options.projectsfolder = projfolder
   end
+  opts.on("--areas-top-level FOLDER",
+          "The named folder will be created to",
+          "  contain all areas.") do |areafolder|
+    options.areasfolder = areafolder
+  end
 
   opts.on("-c", "--completed",
           "Transfer also completed/canceled tasks",
