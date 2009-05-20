@@ -5,6 +5,7 @@ require "ostruct"
 require 'time'
 begin; require 'rubygems'; rescue LoadError; end
 require 'appscript'; include Appscript
+require 'hpricot'
 
 ######################################################################
 
@@ -69,9 +70,9 @@ module Things2THL
                                 :completed => :completed,
                                 :canceled  => :canceled,
                               },
-                              :notes => :notes,
                             },
                             Proc.new {|node,prop,obj|
+                              obj.add_notes(node,prop)
                               obj.fix_completed_canceled(node, prop)
                               obj.archive_completed(prop)
                               obj.process_tags(node, prop, true, true)
@@ -96,9 +97,9 @@ module Things2THL
                          :completed => :completed,
                          :canceled  => :canceled,
                        },
-                       :notes => :notes,
                      },
                      Proc.new {|node,prop,obj|
+                       obj.add_notes(node,prop)
                        obj.fix_completed_canceled(node, prop)
                        obj.archive_completed(prop)
                        obj.process_tags(node, prop, false, true)
@@ -116,9 +117,9 @@ module Things2THL
                                 :completed => :completed,
                                 :canceled  => :canceled,
                               },
-                              :notes => :notes,
                             },
                             Proc.new {|node,prop,obj|
+                              obj.add_notes(node,prop)
                               obj.fix_completed_canceled(node, prop)
                               obj.archive_completed(prop)
                               obj.process_tags(node, prop, false, true)
@@ -709,6 +710,30 @@ module Things2THL
       prop[:__newnodes__].push(newnode)
     end
 
+    def hextostring(hexstr)
+      [hexstr.delete(" ")].pack("H*")
+    end
+
+    def aliastostring(node)
+      hextostring((node/'alias').inner_text)
+    end
+
+    # Process Things notes before adding them to THL.
+    def convert_notes(notes)
+      return unless notes
+      # First, parse the notes as XML and extract the contents of the <note> tag
+      note_html = (Hpricot.XML(notes)/'/note').inner_html
+      # Then parse the HTML
+      html = Hpricot(note_html)
+      # Then swap any <alias> tags with their unencoded content
+      # TODO: this is a hack - it would be much better to understand the binary structure of the <alias> tag.
+      while html.at('alias')
+        html.at('alias').swap( aliastostring(html).gsub(/^.*\000\022\000.(.*?)\000.*$/m, 'file:///\1') )
+      end
+      # Finally return the HTML in "plain text" format, which shows the links in brackets
+      html.to_plain_text
+    end
+
     # Add a new task containing project notes when the project is a THL list,
     # since THL lists cannot have notes
     def add_list_notes(node, prop)
@@ -720,7 +745,7 @@ module Things2THL
         if node.notes? && new_node_type == :list
           newnode = {
             :new => :task,
-            :with_properties => { :title => "Notes for '#{prop[:name]}'", :notes => node.notes }}
+            :with_properties => { :title => "Notes for '#{prop[:name]}'", :notes => convert_notes(node.notes) }}
           # Mark as completed if the project is completed
           if node.status == :completed || node.status == :canceled
             newnode[:with_properties][:completed] = true
@@ -732,6 +757,11 @@ module Things2THL
           $stderr.puts "Error: cannot transfer notes into new folder: #{node.notes}"
         end
       end
+    end
+
+    # Transfer processed notes
+    def add_notes(node, prop)
+      prop[:notes] = convert_notes(node.notes) if node.notes?
     end
 
     # When projects are lists, if the project has a due date, we add a bogus task to it
@@ -771,4 +801,14 @@ module Things2THL
   def Things2THL.new(opt_struct = nil, things_db = nil, thl_location = nil)
     Converter.new(opt_struct, things_db, thl_location)
   end
+end
+
+######################################################################
+# For debugging and testing
+
+if $0 == __FILE__
+  c=Things2THL.new
+  th=c.things
+  thl=c.thl
+  true
 end
