@@ -47,7 +47,8 @@
 	      </div>
 	      -->
       
-      <h1><a href="http://github.com/zzamboni/things2thl">things2thl</a></h1>
+      <h1><a href="http://github.com/zzamboni/things2thl">things2thl</a>
+	<span class="small"> <a href="http://github.com/zzamboni/things2thl/blob/d584e498f7c9b08a8b6d85ae21b79b81153aaa85/ChangeLog">v0.6.0</a></span></h1>
 
       <div class="description">
 	Things-to-The Hit List converter
@@ -73,9 +74,10 @@
 	<pre>$ sudo gem install zzamboni-things2thl --source http://gems.github.com/</pre>
       </p>
 
-      <p>Note: things2thl needs
-      the <a href="http://appscript.sourceforge.net/rb-appscript/">rb-appscript
-      library</a>. If you don't have it already, it will be
+      <p>Note: things2thl need
+      the <a href="http://appscript.sourceforge.net/rb-appscript/">rb-appscript</a>
+      and <a href="http://wiki.github.com/why/hpricot">hpricot</a>
+      libraries. If you don't have them already, they will be
       automatically installed by gem.</p>
 
       <h2>Usage</h2>
@@ -133,11 +135,6 @@ Options you should seldom need:
       <h3>Missing functionality</h3>
 
       <ul>
-	<li> Handle rich-text notes (with attachments, links, etc.) properly.
-
-	  <p>Plan: not sure yet. Need to investigate how notes are stored in
-	    THL (Things uses an XML format)</p>
-	</li>
 	<li> Handling delegation ("People" feature in Things)
 
 	  <p>Not sure how to transfer this to THL. Ideas are welcome.</p>
