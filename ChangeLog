@@ -1,6 +1,34 @@
+2009-05-21  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION, lib/Things2THL.rb: Version bump to 0.7.0
+
+2009-05-21  Diego Zamboni <diego@zzamboni.org>
+
+	* README, bin/things2thl, lib/Things2THL.rb: Added a new mode of
+	operation --projects-areas-as-lists (-B). As the name implies, in
+	this mode both projects and areas from Things are stored as lists in
+	THL. This means that projects are NOT nested inside areas, as is the
+	case in the other two modes. Instead, the lists for areas will
+	contain only single tasks that were inside the area in Things.  If --projects-top-level and --areas-top-level are not given, all the
+	lists will be created in the main folders group. Otherwise, they
+	will appear within the corresponding folder.
+
+2009-05-21  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl, lib/Things2THL.rb: Added --areas-top-level option
+	to specify a folder in which imported Areas should be created.
+
 2009-05-20  Diego Zamboni <diego@zzamboni.org>
 
-	* VERSION: Version bump to 0.6.0
+	* README: Updated README
+
+2009-05-20  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.6.0
+
+2009-05-20  Diego Zamboni <diego@zzamboni.org>
+
+	* ChangeLog, VERSION, lib/Things2THL.rb: Version bump to 0.6.0
 
 2009-05-20  Diego Zamboni <diego@zzamboni.org>
 
