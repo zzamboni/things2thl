@@ -17,9 +17,10 @@ support.
 Then install things2thl by running:
      $ sudo gem install zzamboni-things2thl --source http://gems.github.com/
 
-Note: things2thl need the rb-appscript library from
-http://appscript.sourceforge.net/rb-appscript/install.html. If you
-don't have it already, it will be automatically installed by gem.
+Note: things2thl need the rb-appscript
+(http://appscript.sourceforge.net/rb-appscript/) and hpricot
+(http://wiki.github.com/why/hpricot) . If you don't have them already,
+they will be automatically installed by gem.
 
 
 
@@ -70,11 +71,6 @@ Options you should seldom need:
 
 Functionality still missing:
 ---------------------------
-
-- Handle rich-text notes (with attachments, links, etc.) properly
-
-  Plan: not sure yet. Need to investigate how notes are stored in
-  THL (Things uses an XML format)
 
 - Handling delegation ("People" feature in Things)
 
