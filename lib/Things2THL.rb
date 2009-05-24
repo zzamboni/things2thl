@@ -491,10 +491,10 @@ module Things2THL
       if foci.empty?
         if node.project?
           tl=top_level_for_node(node.project)
-          if !tl && node.area?
+          if !tl && node.area? && !options.areas_as
             tl=top_level_for_node(node.area)
           end
-        elsif node.area?
+        elsif node.area? && !options.areas_as
           tl=top_level_for_node(node.area)
         end
         return tl
@@ -530,7 +530,7 @@ module Things2THL
                   when :area
                     tlcontainer
                   when :project
-                    if options.areas && (options.structure != :projects_areas_as_lists)  && node.area?
+                    if options.areas && !options.areas_as && (options.structure != :projects_areas_as_lists)  && node.area?
                       get_cached_or_process(node.area)
                     else
                       tlcontainer
@@ -538,7 +538,7 @@ module Things2THL
                   when :selected_to_do
                     if node.project?
                       get_cached_or_process(node.project)
-                    elsif node.area? && options.areas
+                    elsif node.area? && options.areas && !options.areas_as
                       get_cached_or_process(node.area)
                     else
                       # It's a loose task
@@ -689,17 +689,34 @@ module Things2THL
     # Process tags
     def process_tags(node, prop, inherit_project_tags, inherit_area_tags)
       tasktags = node.tags.map {|t| t.name }
+      taskcontexts = []
       if inherit_project_tags
         # Merge project and area tags
         if node.project?
           tasktags |= node.project.tags.map {|t| t.name }
           if options.areas && node.project.area?
             tasktags |= node.project.area.tags.map {|t| t.name }
+            if options.areas_as
+              case options.areas_as
+              when :tags
+                tasktags.push(node.project.area.name)
+              when :contexts
+                taskcontexts.push(node.project.area.name)
+              end
+            end
           end
         end
       end
       if options.areas && node.area? && inherit_area_tags
         tasktags |= node.area.tags.map {|t| t.name }
+        if options.areas_as
+          case options.areas_as
+          when :tags
+            tasktags.push(node.area.name)
+          when :contexts
+            taskcontexts.push(node.area.name)
+          end
+        end
       end
       unless tasktags.empty?
         # First process time-estimate tags if needed
@@ -740,6 +757,12 @@ module Things2THL
                           else
                             "/" + t + (t.index(" ")?"/":"")
                           end
+                        end].join(' ')
+      end
+      unless taskcontexts.empty?
+        prop[:title] = [prop[:title], taskcontexts.map do |c|
+                          # Contexts cannot have spaces, we also remove any initial @'s before adding our own.
+                          "@" + c.gsub(/^@+/, "").gsub(/ /, '_')
                         end].join(' ')
       end
     end
@@ -842,6 +865,7 @@ module Things2THL
     options.contexttagsregex = '^@'
     options.timetagsregex = '^(\d+)(min|sec|hr)$'
     options.timetags = false
+    options.areas_as = nil
     return options
   end
 

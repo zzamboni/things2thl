@@ -29,6 +29,8 @@ opts = OptionParser.new do |opts|
   opts.separator ''
   opts.separator("Options:")
   opts.on("--[no-]areas", "Transfer areas from Things (default: #{options.areas ? 'yes' : 'no'})") { |v| options.areas = v }
+  opts.on("--areas-as-tags", "Transfer areas from Things as tags in THL") { options.areas_as=:tags }
+  opts.on("--areas-as-contexts", "Transfer areas from Things as contexts in THL") { options.areas_as=:contexts }
   opts.on('--[no-]time-tags',
           'Consider tags of the form Xmin/Xsec/Xhr as',
           '  time estimates, set them in THL',
@@ -113,7 +115,7 @@ thl = converter.thl
 # Create top-level containers if needed
 
 # First, traverse all areas
-if options.areas
+if options.areas && !options.areas_as
   puts "Processing Areas of Responsibility" unless options.quiet
   things.areas.get.each do |area|
     converter.process(Things2THL::ThingsNode.new(area))
