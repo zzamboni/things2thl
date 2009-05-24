@@ -44,6 +44,7 @@ opts = OptionParser.new do |opts|
           "  Use with no- to disable this feature.") do |regex|
     options.contexttagsregex = case regex; when false:nil; when "":options.contexttagsregex; else regex; end
   end
+  opts.on("--sync", "Only transfer new items") { options.sync = true }
   opts.on("--top-level-folder FOLDER", "Do the import inside the named folders,","  instead of the top level",
           "  (Inbox, etc. will also be created there","  instead of their corresponding places)") do |toplevel|
     options.toplevel = toplevel

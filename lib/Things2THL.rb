@@ -360,19 +360,40 @@ module Things2THL
       end
     end
 
+    # Simplified version of find_or_create which simply takes :new and :name
+    def simple_find_or_create(what, name, parent = @thl.folders_group.get)
+      find_or_create({:new => what, :with_properties => { :name => name } }, parent)
+    end
+
     # Find or create a list or a folder inside the given parent (or the top-level folders group if not given)
-    def find_or_create(what, name, parent = @thl.folders_group.get)
-      unless what == :list || what == :folder
-        raise "find_or_create: 'what' parameter has to be :list or :folder"
+    def find_or_create(props, parent = @thl.folders_group.get)
+      puts "find_or_create: props = #{props.inspect}"
+      what=props[:new]
+      name=(what==:task) ? props[:with_properties][:title] : props[:with_properties][:name]
+      parentclass=parent.class_.get
+      unless what == :list || what == :folder || what == :task
+        raise "find_or_create: 'props[:new]' parameter has to be :list, :folder or :task"
       end
       puts "parent of #{name} = #{parent}" if $DEBUG
-      if parent.class_.get != :folder
-        raise "find_or_create: parent is not a folder, it's a #{parent.class_.get}"
+      if (what == :folder || what == :list) && parentclass != :folder
+        raise "find_or_create: parent is not a folder, it's a #{parentclass}"
+      elsif what == :task && parentclass != :list && parentclass != :task
+        raise "find_or_create: parent is not a list, it's a #{parentclass}"
       else
-        if parent.groups[name].exists
-          parent.groups[name].get
+        if what == :task
+          query = parent.tasks[its.title.eq(name)]
+          if ! query.get.empty?
+            query.get[0]
+          else
+            parent.end.make(props)
+          end
         else
-          parent.end.make(:new => what, :with_properties => {:name => name})
+          query = parent.groups[name]
+          if query.exists
+            query.get
+          else
+            parent.end.make(props)
+          end
         end
       end
     end
@@ -388,7 +409,11 @@ module Things2THL
 
       unless @top_level_node
         # Create the top-level node if we don't have it cached yet
-        @top_level_node=new_folder(options.toplevel)
+        if options.sync
+          @top_level_node=simple_find_or_create(:folder, options.toplevel)
+        else
+          @top_level_node=new_folder(options.toplevel)
+        end
       end
       @top_level_node
     end
@@ -416,17 +441,17 @@ module Things2THL
                    when 'Trash', 'Today'
                      nil
                    when 'Inbox', 'Next'
-                     find_or_create(:list, focusname, top_level_node)
+                     simple_find_or_create(:list, focusname, top_level_node)
                    when 'Scheduled', 'Logbook'
-                     find_or_create((thl_node_type(:project) == :task) ? :list : :folder, focusname, top_level_node)
+                     simple_find_or_create((thl_node_type(:project) == :task) ? :list : :folder, focusname, top_level_node)
                    when 'Someday'
-                     find_or_create(:folder, focusname, top_level_node)
+                     simple_find_or_create(:folder, focusname, top_level_node)
                    when 'Projects'
                      if thl_node_type(:project) == :task
-                       find_or_create(:list, options.projectsfolder || 'Projects', top_level_node)
+                       simple_find_or_create(:list, options.projectsfolder || 'Projects', top_level_node)
                      else
                        if options.projectsfolder
-                         find_or_create(:folder, options.projectsfolder, top_level_node)
+                         simple_find_or_create(:folder, options.projectsfolder, top_level_node)
                        else
                          top_level_node
                        end
@@ -443,15 +468,15 @@ module Things2THL
                    when 'Next'
                      top_level_node
                    when 'Scheduled', 'Logbook'
-                     find_or_create((thl_node_type(:project) == :task) ? :list : :folder, focusname, top_level_node)
+                     simple_find_or_create((thl_node_type(:project) == :task) ? :list : :folder, focusname, top_level_node)
                    when 'Someday'
-                     find_or_create(:folder, focusname, top_level_node)
+                     simple_find_or_create(:folder, focusname, top_level_node)
                    when 'Projects'
                      if thl_node_type(:project) == :task
-                       find_or_create(:list, options.projectsfolder || 'Projects', top_level_node)
+                       simple_find_or_create(:list, options.projectsfolder || 'Projects', top_level_node)
                      else
                        if options.projectsfolder
-                         find_or_create(:folder, options.projectsfolder, top_level_node)
+                         simple_find_or_create(:folder, options.projectsfolder, top_level_node)
                        else
                          top_level_node
                        end
@@ -478,7 +503,7 @@ module Things2THL
           return top_level_for_focus('Someday')
         else
           if options.areasfolder
-            return find_or_create(:folder, options.areasfolder || 'Areas', top_level_node)
+            return simple_find_or_create(:folder, options.areasfolder || 'Areas', top_level_node)
           else
             return top_level_node
           end
@@ -552,9 +577,9 @@ module Things2THL
       # so if the container is a folder, we have to create a list to hold the task
       if container && (container.class_.get == :folder) && (thl_node_type(node) == :task)
         if node.type == :project
-          find_or_create(:list, options.projectsfolder || 'Projects', container)
+          simple_find_or_create(:list, options.projectsfolder || 'Projects', container)
         else
-          find_or_create(:list, loose_tasks_name(container), container)
+          simple_find_or_create(:list, loose_tasks_name(container), container)
         end
       else
         container
@@ -566,8 +591,14 @@ module Things2THL
         new_node_type = thl_node_type(node)
         new_node_props = props_from_node(node)
         additional_nodes = new_node_props.delete(:__newnodes__)
-        result=parent.end.make(:new => new_node_type,
-                               :with_properties => new_node_props )
+        new_node_spec = {
+          :new => new_node_type,
+          :with_properties => new_node_props }
+        if options.sync
+          result=find_or_create(new_node_spec, parent)
+        else
+          result=parent.end.make(new_node_spec)
+        end
         if node.type == :area || node.type == :project
           @cache_nodes[node.id_]={}
           @cache_nodes[node.id_][:things_node] = node
@@ -576,7 +607,11 @@ module Things2THL
         # Add new nodes
         if additional_nodes
           additional_nodes.each do |n|
-            result.end.make(n)
+            if options.sync
+              find_or_create(n, result)
+            else
+              result.end.make(n)
+            end
           end
         end
         return result
@@ -866,6 +901,7 @@ module Things2THL
     options.timetagsregex = '^(\d+)(min|sec|hr)$'
     options.timetags = false
     options.areas_as = nil
+    options.sync = false
     return options
   end
 
