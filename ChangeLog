@@ -1,6 +1,18 @@
 2009-05-25  Diego Zamboni <diego@zzamboni.org>
 
-	* VERSION: Version bump to 0.8.0
+	* README: Fixed README for new options.
+
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.8.1
+
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* README, things2thl.gemspec: Regenerated gemspec for version 0.8.0
+
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* ChangeLog, VERSION: Version bump to 0.8.0
 
 2009-05-25  Diego Zamboni <diego@zzamboni.org>
 
