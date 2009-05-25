@@ -1,4 +1,4 @@
-Things2THL 0.7.0
+Things2THL 0.8.0
 http://zzamboni.github.com/things2thl/
 
 Conversion program to transfer data from Things
@@ -35,9 +35,12 @@ Modes of operation (required):
     -B, --projects-areas-as-tasks    Convert both projects and areas in Things
                                        to lists in THL. This implies that
                                        projects are not nested inside areas.
+    -I, --inbox                      Transfer only Inbox tasks.
 
 Options:
         --[no-]areas                 Transfer areas from Things (default: yes)
+        --areas-as-tags              Transfer areas as tags in THL.
+        --areas-as-contexts          Transfer areas as contexts in THL.
         --[no-]time-tags             Consider tags of the form Xmin/Xsec/Xhr as
                                        time estimates, set them in THL
                                        accordingly (default: no).
@@ -45,6 +48,7 @@ Options:
                                        should be interpreted as contexts.
                                        (default: ^@).
                                        Use with no- to disable this feature.
+        --sync                       Only transfer new items (default: no)
         --top-level-folder FOLDER    Do the import inside the named folders,
                                        instead of the top level
                                        (Inbox, etc. will also be created there
@@ -63,7 +67,8 @@ Options:
                                        and projects (default: no)
         --[no-]archive-completed     If transferring completed/canceled tasks,
                                        also mark them as archived (default: yes)
-    -q, --quiet                      Do not print items as they are processed
+    -q, --quiet                      Do not print items as they are processed.
+                                     Twice: do not print stats at the end.
     -h, --help                       Shows this help message
     -v, --version                    Shows version
 
@@ -72,7 +77,6 @@ Options you should seldom need:
                                        (default: /Applications/Things.app)
         --thl THLAPP                 Location of the The Hit List application
                                        (default: /Applications/The Hit List.app)
-
 Functionality still missing:
 ---------------------------
 
