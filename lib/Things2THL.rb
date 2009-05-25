@@ -915,6 +915,7 @@ module Things2THL
     options.timetags = false
     options.areas_as = nil
     options.sync = false
+    options.inboxonly = false
     return options
   end
 

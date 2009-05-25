@@ -30,6 +30,10 @@ opts = OptionParser.new do |opts|
           "Convert both projects and areas in Things",
           "  to lists in THL. This implies that",
           "  projects are not nested inside areas.") { options.structure = :projects_areas_as_lists }
+  opts.on("-I", "--inbox", "Transfer only Inbox tasks." ) do
+    options.inboxonly = true
+    options.structure = :projects_as_lists
+  end
 
   opts.separator ''
   opts.separator("Options:")
@@ -110,7 +114,7 @@ end
 ######################################################################
 
 opts.parse!
-unless options.structure
+unless options.structure || options.inboxonly
   puts "Error: you didn't specify the mode of operation to use."
   puts ''
   opts.show_usage 
@@ -123,25 +127,27 @@ thl = converter.thl
 # Start timing
 start=Time.new
 
-# First, traverse all areas
-if options.areas && !options.areas_as
-  puts "Processing Areas of Responsibility" unless options.quiet
-  things.areas.get.each do |area|
-    converter.process(Things2THL::ThingsNode.new(area))
+unless options.inboxonly
+  # First, traverse all areas
+  if options.areas && !options.areas_as
+    puts "Processing Areas of Responsibility" unless options.quiet.nonzero?
+    things.areas.get.each do |area|
+      converter.process(Things2THL::ThingsNode.new(area))
+    end
   end
-end
 
-# Next, traverse all projects, putting each one inside its corresponding area
-puts "Processing Projects" unless options.quiet
-if options.completed
-  puts "   (fetching all projects - this may take a while)" unless options.quiet
-  projlist=things.projects.get
-else
-  puts "   (fetching only open projects - this may take a while)" unless options.quiet
-  projlist=things.projects[its.status.eq(:open)].get
-end
-projlist.each do |project|
-  converter.process(Things2THL::ThingsNode.new(project))
+  # Next, traverse all projects, putting each one inside its corresponding area
+  puts "Processing Projects" unless options.quiet.nonzero?
+  if options.completed
+    puts "   (fetching all projects - this may take a while)" unless options.quiet.nonzero?
+    projlist=things.projects.get
+  else
+    puts "   (fetching only open projects - this may take a while)" unless options.quiet.nonzero?
+    projlist=things.projects[its.status.eq(:open)].get
+  end
+  projlist.each do |project|
+    converter.process(Things2THL::ThingsNode.new(project))
+  end
 end
 
 # Now do the tasks
@@ -149,13 +155,18 @@ end
 # - to_dos returns not only tasks, also projects (not areas)
 # - to-dos returns tasks from all the views: Inbox, Today, Scheduled, Someday, and Next, so we have
 #   to separate them and create the appropriate containers as needed
-puts "Processing tasks" unless options.quiet
-if options.completed
-  puts "   (fetching all tasks - this may take a while)" unless options.quiet
-  tasklist=things.to_dos.get
+puts "Processing tasks" unless options.quiet.nonzero?
+if options.inboxonly
+  queryobj=things.lists['Inbox']
 else
-  puts "   (fetching only open tasks - this may take a while)" unless options.quiet
-  tasklist=things.to_dos[its.status.eq(:open)].get
+  queryobj=things
+end
+if options.completed
+  puts "   (fetching all tasks - this may take a while)" unless options.quiet.nonzero?
+  tasklist=queryobj.to_dos.get
+else
+  puts "   (fetching only open tasks - this may take a while)" unless options.quiet.nonzero?
+  tasklist=queryobj.to_dos[its.status.eq(:open)].get
 end
 tasklist.each do |t|
   task=Things2THL::ThingsNode.new(t)
