@@ -1,6 +1,43 @@
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.8.0
+
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl, lib/Things2THL.rb: Added new mode of operation
+	--inbox (-I) to transfer only tasks from the Inbox.
+
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl, lib/Things2THL.rb: Added printing of some
+	statistics at the end - number of items created, total time elapsed.
+	Can be disabled by specifying -q twice (-qq).
+
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl, lib/Things2THL.rb: Added option --sync, which
+	causes items (areas, projects and tasks) not to be created if they
+	already exist. This is useful if you add more items to Things after
+	you have transferred to THL, and want to re-transfer just the new
+	ones.  This option is disabled by default because the duplicate checking is
+	done using only the item's name, so if you have multiple entries
+	with the same name in Things, they will only be transferred once
+	with --sync enabled.
+
+2009-05-24  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl, lib/Things2THL.rb: Added options --areas-as-tags
+	and --areas-as-contexts, which specify that areas in Things should
+	be transferred to THL as tags/contexts respectively, instead of
+	created as separate entities.  Thanks to @biomac101 for the suggestion.
+
 2009-05-21  Diego Zamboni <diego@zzamboni.org>
 
-	* VERSION, lib/Things2THL.rb: Version bump to 0.7.0
+	* things2thl.gemspec: Regenerated gemspec for version 0.7.0
+
+2009-05-21  Diego Zamboni <diego@zzamboni.org>
+
+	* ChangeLog, VERSION, lib/Things2THL.rb: Version bump to 0.7.0
 
 2009-05-21  Diego Zamboni <diego@zzamboni.org>
 
