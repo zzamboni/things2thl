@@ -4,6 +4,7 @@
 require File.join(File.dirname(__FILE__), *%w".. lib Things2THL")
 require "optparse"
 require "ostruct"
+require "time"
 
 options=Things2THL.default_options
 opts = OptionParser.new do |opts|
@@ -13,6 +14,10 @@ opts = OptionParser.new do |opts|
   def opts.show_usage
     puts self
     exit  
+  end
+
+  def yesno(v)
+    "(default: #{v ? 'yes' : 'no'})"
   end
   
   opts.separator ''
@@ -28,13 +33,13 @@ opts = OptionParser.new do |opts|
 
   opts.separator ''
   opts.separator("Options:")
-  opts.on("--[no-]areas", "Transfer areas from Things (default: #{options.areas ? 'yes' : 'no'})") { |v| options.areas = v }
-  opts.on("--areas-as-tags", "Transfer areas from Things as tags in THL") { options.areas_as=:tags }
-  opts.on("--areas-as-contexts", "Transfer areas from Things as contexts in THL") { options.areas_as=:contexts }
+  opts.on("--[no-]areas", "Transfer areas from Things #{yesno(options.areas)}") { |v| options.areas = v }
+  opts.on("--areas-as-tags", "Transfer areas as tags in THL.") { options.areas_as=:tags }
+  opts.on("--areas-as-contexts", "Transfer areas as contexts in THL.") { options.areas_as=:contexts }
   opts.on('--[no-]time-tags',
           'Consider tags of the form Xmin/Xsec/Xhr as',
           '  time estimates, set them in THL',
-          "  accordingly (default: #{options.timetags ? 'yes' : 'no'}).") do |value|
+          "  accordingly #{yesno(options.timetags)}.") do |value|
     options.timetags = value
   end
   opts.on('--[no-]context-tags [REGEX]',
@@ -44,7 +49,7 @@ opts = OptionParser.new do |opts|
           "  Use with no- to disable this feature.") do |regex|
     options.contexttagsregex = case regex; when false:nil; when "":options.contexttagsregex; else regex; end
   end
-  opts.on("--sync", "Only transfer new items") { options.sync = true }
+  opts.on("--sync", "Only transfer new items #{yesno(options.sync)}") { options.sync = true }
   opts.on("--top-level-folder FOLDER", "Do the import inside the named folders,","  instead of the top level",
           "  (Inbox, etc. will also be created there","  instead of their corresponding places)") do |toplevel|
     options.toplevel = toplevel
@@ -68,11 +73,13 @@ opts = OptionParser.new do |opts|
 
   opts.on("-c", "--completed",
           "Transfer also completed/canceled tasks",
-          "  and projects (default: #{options.completed ? 'yes' : 'no'})") { options.completed = true }
+          "  and projects #{yesno(options.completed)}") { options.completed = true }
   opts.on("--[no-]archive-completed",
           "If transferring completed/canceled tasks,",
-          "  also mark them as archived (default: #{options.archivecompleted ? 'yes' : 'no'})") {|v| options.archivecompleted = v }
-  opts.on("-q", "--quiet", "Do not print items as they are processed") { options.quiet = true }
+          "  also mark them as archived #{yesno(options.archivecompleted)}") {|v| options.archivecompleted = v }
+  opts.on("-q", "--quiet",
+          "Do not print items as they are processed.",
+          "Twice: do not print stats at the end.") { options.quiet+=1 }
 #  opts.on("-n", "--dry-run", "Do not create anything in THL, just print the items that would be created") { options.dryrun = true }
 #  opts.on("-n", "--notes", "Shows only tasks with notes") { options[:tasks] = { :onlynotes => true } }
 #  opts.on("-a", "--all", 'Shows all tasks in the focus') { |f| options[:tasks] = { :children => false } }
@@ -113,7 +120,8 @@ converter = Things2THL.new(options, options.thingsapp, options.thlapp)
 things = converter.things
 thl = converter.thl
 
-# Create top-level containers if needed
+# Start timing
+start=Time.new
 
 # First, traverse all areas
 if options.areas && !options.areas_as
@@ -155,3 +163,11 @@ tasklist.each do |t|
   converter.process(task)
 end
 
+# End timing
+diff=Time.new-start
+
+# Print stats at the end
+unless options.quiet >= 2
+  puts "Conversion done in #{diff} seconds."
+  converter.created.each_pair { |key,val| puts "  #{val} #{key}#{val!=1 ? 's' : ''} created" }
+end

@@ -263,7 +263,7 @@ module Things2THL
   ####################################################################
 
   class Converter
-    attr_accessor :options, :things, :thl
+    attr_accessor :options, :things, :thl, :created
 
     def initialize(opt_struct = nil, things_location = nil, thl_location = nil)
       @options=opt_struct || Things2THL.default_options
@@ -295,6 +295,14 @@ module Things2THL
       # id_ of each node that belongs to that focus. Existence of the key
       # indicates existence in the focus.
       @cache_focus = {}
+
+      # Statistics
+      @created = {
+        :task      => 0,
+        :list      => 0,
+        :folder    => 0
+      }
+
     end
 
     # Get the type of the THL node that corresponds to the given Things node,
@@ -367,7 +375,7 @@ module Things2THL
 
     # Find or create a list or a folder inside the given parent (or the top-level folders group if not given)
     def find_or_create(props, parent = @thl.folders_group.get)
-      puts "find_or_create: props = #{props.inspect}"
+      puts "find_or_create: props = #{props.inspect}" if $DEBUG
       what=props[:new]
       name=(what==:task) ? props[:with_properties][:title] : props[:with_properties][:name]
       parentclass=parent.class_.get
@@ -385,6 +393,7 @@ module Things2THL
           if ! query.get.empty?
             query.get[0]
           else
+            @created[what]+=1
             parent.end.make(props)
           end
         else
@@ -392,6 +401,7 @@ module Things2THL
           if query.exists
             query.get
           else
+            @created[what]+=1
             parent.end.make(props)
           end
         end
@@ -399,6 +409,7 @@ module Things2THL
     end
 
     def new_folder(name, parent = @thl.folders_group.get)
+      @created[:folder]+=1
       parent.end.make(:new => :folder,
                       :with_properties => { :name => name })
     end
@@ -597,6 +608,7 @@ module Things2THL
         if options.sync
           result=find_or_create(new_node_spec, parent)
         else
+          @created[new_node_type]+=1
           result=parent.end.make(new_node_spec)
         end
         if node.type == :area || node.type == :project
@@ -610,6 +622,7 @@ module Things2THL
             if options.sync
               find_or_create(n, result)
             else
+              @created[n[:new]]+=1
               result.end.make(n)
             end
           end
@@ -633,11 +646,11 @@ module Things2THL
       container=container_for(node)
       puts "Container for #{node.name}: #{container}" if $DEBUG
       unless container
-        puts "Skipping trashed task '#{node.name}'" unless options.quiet
+        puts "Skipping trashed task '#{node.name}'" unless options.quiet.nonzero?
         return
       end
       
-      unless (options.quiet) 
+      unless (options.quiet.nonzero?) 
         bullet  = (node.type == :area) ? "*" : ((node.status == :completed) ? "✓" : (node.status == :canceled) ? "×" : "-")
         puts bullet + " " + node.name
       end
@@ -893,7 +906,7 @@ module Things2THL
     options.database = nil
     options.structure = nil
     options.areas = true
-    options.quiet = false
+    options.quiet = 0
     options.archivecompleted = true
     options.projectsfolder = nil
     options.areasfolder = nil
