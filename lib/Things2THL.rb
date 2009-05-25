@@ -847,8 +847,10 @@ module Things2THL
       while html.at('alias')
         html.at('alias').swap( aliastostring(html).gsub(/^.*\000\022\000.(.*?)\000.*$/m, 'file:///\1') )
       end
-      # Finally return the HTML in "plain text" format, which shows the links in brackets
-      html.to_plain_text
+      # Produce the HTML in "plain text" format, which shows the links in brackets
+      result=html.to_plain_text
+      # Eliminate double URIs of the form 'URI [URI]' (i.e. when the link text is the URI itself)
+      result.gsub(/([\w]+:.*)\s+\[\1\]/, '\1')
     end
 
     # Add a new task containing project notes when the project is a THL list,
