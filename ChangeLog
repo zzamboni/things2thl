@@ -1,6 +1,23 @@
+2009-05-26  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.8.2
+
 2009-05-25  Diego Zamboni <diego@zzamboni.org>
 
-	* README: Fixed README for new options.
+	* lib/Things2THL.rb: Eliminate double URIs of the form 'URI [URI]'
+	(i.e. when the link text is the URI itself) when converting notes.
+
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.8.1
+
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* : fixed conflict
+
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* ChangeLog, README: Fixed README for new options.
 
 2009-05-25  Diego Zamboni <diego@zzamboni.org>
 
@@ -9,6 +26,10 @@
 2009-05-25  Diego Zamboni <diego@zzamboni.org>
 
 	* README, things2thl.gemspec: Regenerated gemspec for version 0.8.0
+
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.8.0
 
 2009-05-25  Diego Zamboni <diego@zzamboni.org>
 
