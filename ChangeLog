@@ -1,0 +1,399 @@
+2009-06-11  Diego Zamboni <diego@zzamboni.org>
+
+        * README, VERSION, lib/Things2THL.rb: Version bump to 0.8.3.  Updated in-code version number to the correct one (it was still
+        reporting 0.7.0)
+
+2009-05-26  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.8.2
+
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* lib/Things2THL.rb: Eliminate double URIs of the form 'URI [URI]'
+	(i.e. when the link text is the URI itself) when converting notes.
+
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.8.1
+
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* : fixed conflict
+
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* ChangeLog, README: Fixed README for new options.
+
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.8.1
+
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* README, things2thl.gemspec: Regenerated gemspec for version 0.8.0
+
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.8.0
+
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* ChangeLog, VERSION: Version bump to 0.8.0
+
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl, lib/Things2THL.rb: Added new mode of operation
+	--inbox (-I) to transfer only tasks from the Inbox.
+
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl, lib/Things2THL.rb: Added printing of some
+	statistics at the end - number of items created, total time elapsed.
+	Can be disabled by specifying -q twice (-qq).
+
+2009-05-25  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl, lib/Things2THL.rb: Added option --sync, which
+	causes items (areas, projects and tasks) not to be created if they
+	already exist. This is useful if you add more items to Things after
+	you have transferred to THL, and want to re-transfer just the new
+	ones.  This option is disabled by default because the duplicate checking is
+	done using only the item's name, so if you have multiple entries
+	with the same name in Things, they will only be transferred once
+	with --sync enabled.
+
+2009-05-24  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl, lib/Things2THL.rb: Added options --areas-as-tags
+	and --areas-as-contexts, which specify that areas in Things should
+	be transferred to THL as tags/contexts respectively, instead of
+	created as separate entities.  Thanks to @biomac101 for the suggestion.
+
+2009-05-21  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.7.0
+
+2009-05-21  Diego Zamboni <diego@zzamboni.org>
+
+	* ChangeLog, VERSION, lib/Things2THL.rb: Version bump to 0.7.0
+
+2009-05-21  Diego Zamboni <diego@zzamboni.org>
+
+	* README, bin/things2thl, lib/Things2THL.rb: Added a new mode of
+	operation --projects-areas-as-lists (-B). As the name implies, in
+	this mode both projects and areas from Things are stored as lists in
+	THL. This means that projects are NOT nested inside areas, as is the
+	case in the other two modes. Instead, the lists for areas will
+	contain only single tasks that were inside the area in Things.  If --projects-top-level and --areas-top-level are not given, all the
+	lists will be created in the main folders group. Otherwise, they
+	will appear within the corresponding folder.
+
+2009-05-21  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl, lib/Things2THL.rb: Added --areas-top-level option
+	to specify a folder in which imported Areas should be created.
+
+2009-05-20  Diego Zamboni <diego@zzamboni.org>
+
+	* README: Updated README
+
+2009-05-20  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.6.0
+
+2009-05-20  Diego Zamboni <diego@zzamboni.org>
+
+	* ChangeLog, VERSION, lib/Things2THL.rb: Version bump to 0.6.0
+
+2009-05-20  Diego Zamboni <diego@zzamboni.org>
+
+	* Rakefile, lib/Things2THL.rb: Vastly improved conversion of the
+	notes field. The HTML stored in the Things notes is parsed and
+	rendered as text, including all the appropriate URLs and links. It
+	does not look exactly as the original, but is quite usable.
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* README: Updated to state limitation of transferring repeating
+	tasks.
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* lib/Things2THL.rb: Make Scheduled and Logbook a list instead of a
+	folder when --projects-as-tasks. Someday stays always as a folder,
+	because it can contain areas (suspended areas)
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* lib/Things2THL.rb: Transfer activation_date as start_date so that
+	scheduled (one-time) tasks are set appropriately. Still need to
+	figure out how to identify repeating tasks.
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.5.0
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* ChangeLog, README, VERSION, lib/Things2THL.rb: Version bump to
+	0.5.0
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl, lib/Things2THL.rb: Made it mandatory to specify
+	the mode of operation (--projects-as-lists or --projects-as-tasks).
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl, lib/Things2THL.rb: Added --[no-]time-tags option,
+	which allows time-estimate tags in Things for the form Xsec/Xmin/Xhr
+	(e.g. I use "10min", "30min", "60min") to be converted to the
+	appropriate time estimate attribute of the tasks in THL. For now the
+	format of the time-estimate tags is fixed, but I might add
+	customization if I someone asks for it. This option is disabled by
+	default.  Also changed the --context-tags-regex option to be
+	--[no-]context-tags, which allows both specifying the regex and
+	(with --no-) disabling the feature in a single option.
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.4.4
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.4.4
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* ChangeLog, lib/Things2THL.rb: Updated ChangeLog
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.4.3
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* lib/Things2THL.rb: Updated version number
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.4.3
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* README, Rakefile, lib/Things2THL.rb: Updated documentation, added
+	rb-appscript dependency
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.4.2
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl: Reformatted usage message to fit in an 80-column
+	window
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.4.1
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.4.1
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.4.0
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* ChangeLog, README, VERSION, lib/Things2THL.rb: Version bump to
+	0.4.0, added ChangeLog Updated README file
+
+2009-05-19  Diego Zamboni <diego@zzamboni.org>
+
+	* lib/Things2THL.rb: Removed per-node type display from progress
+	printout
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl: Fetch only completed projects/tasks using
+	Applescript (unless --completed is specified), which drastically
+	improves performance.
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl: Improved help text by showing actual options
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl, lib/Things2THL.rb: Moved default options
+	generation to Things2THL.default_options.
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION, lib/Things2THL.rb, things2thl.gemspec: Version bump to
+	0.3.0
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION, things2thl.gemspec: Version bump to 0.2.2
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION, lib/Things2THL.rb, things2thl.gemspec: Version bump to
+	0.2.1
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION, things2thl.gemspec: Version bump to 0.2.0
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.3.0
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* lib/Things2THL.rb: Bumped version number to 0.3.0
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.3.0
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl, lib/Things2THL.rb: Added option
+	--context-tags-regex (-C) for specifying which Things tags should be
+	considered as contexts when moving to THL. By default its value is
+	"^@", which means any tag starting with @ will be entered into THL
+	as a context. Any regular expression can be used.  If any of the
+	tags matched by this regex contains spaces, the spaces will be
+	converted to underscores, since THL does not allow spaces in context
+	names.
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl: Code cleanup.
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.2.2
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* lib/Things2THL.rb: Fixed typo in version number code. Oops
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.2.2
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.2.1
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* lib/Things2THL.rb: Bumped script version number to match gem
+	version
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.2.1
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* things2thl.gemspec: Regenerated gemspec for version 0.2.0
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.2.0
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* Rakefile: Modified Rakefile to use Jeweler
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* lib/Things2THL.rb: Removed debug message
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.1.0
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* VERSION: Version bump to 0.0.0
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* lib/Things2THL.rb: Added value caching for ThingsNode, drastically
+	reducing the number of Apple events that have to be generated
+
+2009-05-18  Diego Zamboni <diego@zzamboni.org>
+
+	* lib/Things2THL.rb: Eliminated unnecessary (and extremely frequent)
+	redefinition of ThingsNode methods, which made the script much
+	slower by invoking eval_class thousands of times.
+
+2009-05-17  Diego Zamboni <diego@zzamboni.org>
+
+	* Manifest, Rakefile, things2thl.gemspec: Added Rakefile, Manifest
+	and gemspec file
+
+2009-05-17  Diego Zamboni <diego@zzamboni.org>
+
+	* lib/Things2THL.rb: Added cache of focusnames, and avoid computing
+	the task cache for "Logbook" (which can be pretty big) unless
+	--completed was specified.
+
+2009-05-16  Diego Zamboni <diego@zzamboni.org>
+
+	* README, bin/things2thl, lib/Things2THL.rb: Fully functional
+	version! All the essential functionality is there.  Projects, areas
+	and foci are handled appropriately, as are completed tasks and
+	projects, suspended areas, etc.
+
+2009-05-14  Diego Zamboni <diego@zzamboni.org>
+
+	* lib/Things2THL.rb: - Handle project due dates when --projects-as-lists by creating a
+	  new task within the list, with the appropriate due date.  - Mark fake "notes" task when --projects-as-lists as completed if   the enclosing project is completed or canceled.  - Added project- and area-tag inheritance into individual tasks   when the project/area is a list (THL lists can't have tags) - Added generic internal mechanism for creating additional nodes,
+	  used both for the due dates tasks and the notes tasks.
+
+2009-05-14  Diego Zamboni <diego@zzamboni.org>
+
+	* lib/Things2THL.rb: - Inherit project tags into the corresponding tasks - Base support for putting tasks in the proper focus. So far, only   Today tasks are properly flagged.
+
+2009-05-13  Diego Zamboni <diego@zzamboni.org>
+
+	* lib/Things2THL.rb: Simplified postproc blocks in STRUCTURE by
+	passing the Things2THL object to it, which allows calling methods in
+	the object (the postproc block itself cannot access anything from
+	Things2THL because it is not defined as part of the Things2THL
+	class).
+
+2009-05-13  Diego Zamboni <diego@zzamboni.org>
+
+	* lib/Things2THL.rb: Fixed bug when --projects-as-tasks was used
+
+2009-05-13  Diego Zamboni <diego@zzamboni.org>
+
+	* README, bin/things2thl, lib/Things2THL.rb: Added proper handling
+	of most node attributes, including rudimentary transfering of the
+	tags (not contexts vs tags yet).  Updated README with some usage notes and warnings.
+
+2009-05-12  Diego Zamboni <diego@zzamboni.org>
+
+	* bin/things2thl, lib/Things2THL.rb: - Modified to use Applescript to get stuff out of Things instead   of the things-rb library (needs Things 1.1.1 or later) - Simplified the algorithm to a multiple-pass one (areas, projects,
+	  tasks) using memoization to do the nesting, instead of trying to do
+	  a hierarchical traversal.  - Tasks are also now imported, but those not in projects or areas
+	  are still not divided properly (e.g. in Inbox, Scheduled, etc.)
+
+2009-05-05  Diego Zamboni <diego@zzamboni.org>
+
+	* README: Updated URLs
+
+2009-05-05  Diego Zamboni <diego@zzamboni.org>
+
+	* First commit - partially-working code. Able to transfer some tasks
+	from Things to THL, but not all attributes are preserved yet
+
