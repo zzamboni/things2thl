@@ -1,3 +1,8 @@
+2009-06-11  Diego Zamboni <diego@zzamboni.org>
+
+        * README, VERSION, lib/Things2THL.rb: Version bump to 0.8.3.  Updated in-code version number to the correct one (it was still
+        reporting 0.7.0)
+
 2009-05-26  Diego Zamboni <diego@zzamboni.org>
 
 	* VERSION: Version bump to 0.8.2

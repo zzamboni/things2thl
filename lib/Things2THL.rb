@@ -12,8 +12,8 @@ require 'hpricot'
 module Things2THL
   module Version
     MAJOR  = 0
-    MINOR  = 7
-    PATCH  = 0
+    MINOR  = 8
+    PATCH  = 3
 
     STRING = [MAJOR, MINOR, PATCH].join(".")
   end
