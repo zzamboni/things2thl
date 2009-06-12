@@ -1,7 +1,18 @@
+2009-06-12  Diego Zamboni <diego@zzamboni.org>
+
+        * VERSION: Version bump to 0.8.4
+
+2009-06-12  Diego Zamboni <diego@zzamboni.org>
+
+        * README, bin/things2thl, lib/Things2THL.rb: Increased timeouts for
+        all top-level get operations, to avoid errors on slow machines or
+        with lots of tasks/projects/areas
+
 2009-06-11  Diego Zamboni <diego@zzamboni.org>
 
-        * README, VERSION, lib/Things2THL.rb: Version bump to 0.8.3.  Updated in-code version number to the correct one (it was still
-        reporting 0.7.0)
+        * README, VERSION, lib/Things2THL.rb: Version bump to 0.8.3.
+	Updated in-code version number to the correct one (it was still
+	reporting 0.7.0)
 
 2009-05-26  Diego Zamboni <diego@zzamboni.org>
 
@@ -81,12 +92,14 @@
 
 	* README, bin/things2thl, lib/Things2THL.rb: Added a new mode of
 	operation --projects-areas-as-lists (-B). As the name implies, in
-	this mode both projects and areas from Things are stored as lists in
-	THL. This means that projects are NOT nested inside areas, as is the
-	case in the other two modes. Instead, the lists for areas will
-	contain only single tasks that were inside the area in Things.  If --projects-top-level and --areas-top-level are not given, all the
-	lists will be created in the main folders group. Otherwise, they
-	will appear within the corresponding folder.
+	this mode both projects and areas from Things are stored as lists
+	in THL. This means that projects are NOT nested inside areas, as
+	is the case in the other two modes. Instead, the lists for areas
+	will contain only single tasks that were inside the area in
+	Things.  If --projects-top-level and --areas-top-level are not
+	given, all the lists will be created in the main folders
+	group. Otherwise, they will appear within the corresponding
+	folder.
 
 2009-05-21  Diego Zamboni <diego@zzamboni.org>
 
@@ -355,13 +368,21 @@
 
 2009-05-14  Diego Zamboni <diego@zzamboni.org>
 
-	* lib/Things2THL.rb: - Handle project due dates when --projects-as-lists by creating a
-	  new task within the list, with the appropriate due date.  - Mark fake "notes" task when --projects-as-lists as completed if   the enclosing project is completed or canceled.  - Added project- and area-tag inheritance into individual tasks   when the project/area is a list (THL lists can't have tags) - Added generic internal mechanism for creating additional nodes,
-	  used both for the due dates tasks and the notes tasks.
+	* lib/Things2THL.rb: - Handle project due dates when
+	  --projects-as-lists by creating a new task within the list, with
+	  the appropriate due date.  - Mark fake "notes" task when
+	  --projects-as-lists as completed if the enclosing project is
+	  completed or canceled.  - Added project- and area-tag
+	  inheritance into individual tasks when the project/area is a
+	  list (THL lists can't have tags) - Added generic internal
+	  mechanism for creating additional nodes, used both for the due
+	  dates tasks and the notes tasks.
 
 2009-05-14  Diego Zamboni <diego@zzamboni.org>
 
-	* lib/Things2THL.rb: - Inherit project tags into the corresponding tasks - Base support for putting tasks in the proper focus. So far, only   Today tasks are properly flagged.
+	* lib/Things2THL.rb: - Inherit project tags into the corresponding
+	tasks - Base support for putting tasks in the proper focus. So
+	far, only Today tasks are properly flagged.
 
 2009-05-13  Diego Zamboni <diego@zzamboni.org>
 
@@ -379,14 +400,19 @@
 
 	* README, bin/things2thl, lib/Things2THL.rb: Added proper handling
 	of most node attributes, including rudimentary transfering of the
-	tags (not contexts vs tags yet).  Updated README with some usage notes and warnings.
+	tags (not contexts vs tags yet).  Updated README with some usage
+	notes and warnings.
 
 2009-05-12  Diego Zamboni <diego@zzamboni.org>
 
-	* bin/things2thl, lib/Things2THL.rb: - Modified to use Applescript to get stuff out of Things instead   of the things-rb library (needs Things 1.1.1 or later) - Simplified the algorithm to a multiple-pass one (areas, projects,
-	  tasks) using memoization to do the nesting, instead of trying to do
-	  a hierarchical traversal.  - Tasks are also now imported, but those not in projects or areas
-	  are still not divided properly (e.g. in Inbox, Scheduled, etc.)
+	* bin/things2thl, lib/Things2THL.rb: - Modified to use Applescript
+	  to get stuff out of Things instead of the things-rb
+	  library (needs Things 1.1.1 or later) - Simplified the algorithm
+	  to a multiple-pass one (areas, projects, tasks) using
+	  memoization to do the nesting, instead of trying to do a
+	  hierarchical traversal.  - Tasks are also now imported, but
+	  those not in projects or areas are still not divided
+	  properly (e.g. in Inbox, Scheduled, etc.)
 
 2009-05-05  Diego Zamboni <diego@zzamboni.org>
 
