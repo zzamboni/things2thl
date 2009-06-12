@@ -131,7 +131,7 @@ unless options.inboxonly
   # First, traverse all areas
   if options.areas && !options.areas_as
     puts "Processing Areas of Responsibility" unless options.quiet.nonzero?
-    things.areas.get.each do |area|
+    things.areas.get(:timeout => 10000).each do |area|
       converter.process(Things2THL::ThingsNode.new(area))
     end
   end
@@ -140,10 +140,10 @@ unless options.inboxonly
   puts "Processing Projects" unless options.quiet.nonzero?
   if options.completed
     puts "   (fetching all projects - this may take a while)" unless options.quiet.nonzero?
-    projlist=things.projects.get
+    projlist=things.projects.get(:timeout => 10000)
   else
     puts "   (fetching only open projects - this may take a while)" unless options.quiet.nonzero?
-    projlist=things.projects[its.status.eq(:open)].get
+    projlist=things.projects[its.status.eq(:open)].get(:timeout => 10000)
   end
   projlist.each do |project|
     converter.process(Things2THL::ThingsNode.new(project))
@@ -163,10 +163,10 @@ else
 end
 if options.completed
   puts "   (fetching all tasks - this may take a while)" unless options.quiet.nonzero?
-  tasklist=queryobj.to_dos.get
+  tasklist=queryobj.to_dos.get(:timeout => 10000)
 else
   puts "   (fetching only open tasks - this may take a while)" unless options.quiet.nonzero?
-  tasklist=queryobj.to_dos[its.status.eq(:open)].get
+  tasklist=queryobj.to_dos[its.status.eq(:open)].get(:timeout => 10000)
 end
 tasklist.each do |t|
   task=Things2THL::ThingsNode.new(t)
