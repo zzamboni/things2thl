@@ -4,6 +4,7 @@
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 {% if page.accent %}{% assign accent = page.accent %}{% else %}{% assign accent = '#0080C3' %}{% endif %}
 {% if page.sidebar == null %}{% assign sidebar = true %}{% else %}{% assign sidebar = page.sidebar %}{% endif %}
+
 <title>{{ page.title }}</title>
 <style type="text/css">
 * {
@@ -566,8 +567,8 @@ border: 0;
 {% endif %}
     <div class="header header_text" style="z-index: 10 !important;">
         <div class="content">
-                <h1 style="z-index: 11 !important;; position: absolute; bottom: -5px; right: 110px; text-align: right;"><a href="{{ page.subtitleurl }}"><span style="font-size:20px;">{{ page.subtitle }}</span></a><br /><a href="{{ page.url }}">{{ page.title }}</a></h1>
-                <h1 style="z-index: 1 !important; position: absolute; bottom: -6px; right: 110px; text-align: right;"><a href="{{ page.subtitleurl }}" style="color: #aaa"><span style="font-size:20px;">{{ page.subtitle }}</span></a><br /><a href="{{ page.url }}" style="color: #aaa">{{ page.title }}</a></h1>
+                <h1 style="z-index: 11 !important;; position: absolute; bottom: -5px; right: 110px; text-align: right;"><a href="{{ page.subtitleurl }}"><span style="font-size:20px;">{{ page.subtitle }}</span></a><br /><a href="{{ page.pageurl }}">{{ page.title }}</a></h1>
+                <h1 style="z-index: 1 !important; position: absolute; bottom: -6px; right: 110px; text-align: right;"><a href="{{ page.subtitleurl }}" style="color: #aaa"><span style="font-size:20px;">{{ page.subtitle }}</span></a><br /><a href="{{ page.pageurl }}" style="color: #aaa">{{ page.title }}</a></h1>
                         
         </div>
     </div><!-- /.header -->
@@ -599,7 +600,7 @@ border: 0;
     
                 </div>
                 <div class="post" id="post_70279397373800">
-                        <h2 id="posttitle_70279397043660"><a href="{{ page.url }}">{{ page.posttitle }}</a></h2>
+                        <h2 id="posttitle_70279397043660"><a href="{{ page.pageurl }}">{{ page.posttitle }}</a></h2>
                         
 
                         
