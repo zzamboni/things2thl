@@ -1,58 +1,22 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-
-    <title>things2thl @ GitHub</title>
-    
-    <style type="text/css">
-      body {
-      margin-top: 1.0em;
-      background-color: white;
-      font-family: "helvetica"; 
-      color: black;
-      }
-      #container {
-      margin: 0 auto;
-      width: 700px;
-      }
-      h1 { font-size: 3.8em; color: #2a6cf1; margin-bottom: 3px; }
-      h1 .small { font-size: 0.4em; }
-      h1 a { text-decoration: none }
-      h2 { font-size: 1.5em; color: #2a6cf1; }
-      h3 { color: #2a6cf1; }
-      a { color: #2a6cf1; }
-      .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-      .download { float: right; }
-      pre { background: #000; color: #fff; padding: 15px;}
-      hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-      .footer { text-align:center; padding-top:30px; font-style: italic; }
-    </style>
-    
-  </head>
-
-  <body>
-    <a href="http://github.com/zzamboni/things2thl"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
-    
-    <div id="container">
-
-      <!--
-	  <div class="download">
-	    <a href="http://github.com/zzamboni/things2thl/zipball/master">
-              <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
-	      <a href="http://github.com/zzamboni/things2thl/tarball/master">
-		<img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
-	      </div>
-	      -->
-      
-      <h1><a href="http://github.com/zzamboni/things2thl">things2thl</a>
-	<span class="small"> <a href="ChangeLog.txt">v0.8.4</a></span></h1>
-
-      <div class="description">
-	Things to The Hit List converter
-      </div>
+---
+layout: paramaibo
+accent: '#0D4E0A'
+title: things2thl
+subtitle: zzamboni.org &raquo; code
+posttitle: Things to The Hit List converter
+forkme: true
+forkmeurl: http://github.com/zzamboni/things2thl
+sidebar: false
+---
+{% assign version='0.8.4' %}
+    <div class="download">
+      <p align="center"><b>Download version {{ version}}</b></p>
+      <a href="http://github.com/zzamboni/things2thl/zipball/v{{ version }}">
+        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
+      <a href="http://github.com/zzamboni/things2thl/tarball/v{{ version }}">
+        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
+      <br/><div align="center"><a href="http://github.com/zzamboni/things2thl/raw/master/ChangeLog">(ChangeLog)</a></div>
+    </div>
 
       <p>things2thl is a program for migrating data
 	from <a href="http://culturedcode.com/things">Things</a>
@@ -139,11 +103,7 @@ Options you should seldom need:
                                        List.app)
 </pre>
 
-      (more information coming later)
-
-      <h2>Issues, plans and feedback</h2>
-
-      <h3>Missing functionality</h3>
+      <h2>Missing functionality</h2>
 
       <ul>
 	<li> Handling delegation ("People" feature in Things)
@@ -155,7 +115,7 @@ Options you should seldom need:
 	<li><p>Improve performance</p></li>
       </ul>
 
-      <h3>Known issues</h3>
+      <h2>Known issues</h2>
 
       <ul>
 	<li> Cancellation/completion dates are not transferred, because THL
@@ -173,20 +133,20 @@ Options you should seldom need:
 	  it.</li>
       </uL>
 
-      <h3>Feedback</h3>
+      <h2>Feedback</h2>
 
-      <p>If you have any feedback, feel free to contact me (see
-      below), or open a
+      <p>If you have any feedback, please open a
       new <a href="http://github.com/zzamboni/things2thl/issues">issue
-      on GitHub</a>, which allows me to keep better track of them.</p>
+      on GitHub</a></p>
 
       <h2>License</h2>
       <p>This code is made available under the <a href="http://creativecommons.org/licenses/BSD/">BSD license</a>.</p>
 
       <h2>Author</h2>
-      <p><a href="http://zzamboni.org/brt/">Diego Zamboni</a>
+      <p><a href="http://zzamboni.org/">Diego Zamboni</a>
       (<a href="mailto:diego@zzamboni.org">diego@zzamboni.org</a>)<br/>
-	<a href="http://twitter.com/zzamboni/">@zzamboni</a> on Twitter.</p>
+	<a href="http://twitter.com/zzamboni/">You should follow me on
+	Twitter (@zzamboni)</a></p>
 
       <h2>Download</h2>
 
@@ -203,9 +163,3 @@ Options you should seldom need:
       <div class="footer">
 	get the source code on GitHub : <a href="http://github.com/zzamboni/things2thl">zzamboni/things2thl</a>
       </div>
-      
-    </div>
-
-    
-  </body>
-</html>
