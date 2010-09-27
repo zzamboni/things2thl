@@ -562,16 +562,16 @@ border: 0;
 </head>
 
 <body>    
-{% if page.forkme %}
+  {% if page.forkme %}
   <a href="{{ page.forkmeurl }}"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
-{% endif %}
-    <div class="header header_text" style="z-index: 10 !important;">
-        <div class="content">
-                <h1 style="z-index: 11 !important;; position: absolute; bottom: -5px; right: 110px; text-align: right;"><a href="{{ page.subtitleurl }}"><span style="font-size:20px;">{{ page.subtitle }}</span></a><br /><a href="{{ page.pageurl }}">{{ page.title }}</a></h1>
-                <h1 style="z-index: 1 !important; position: absolute; bottom: -6px; right: 110px; text-align: right;"><a href="{{ page.subtitleurl }}" style="color: #aaa"><span style="font-size:20px;">{{ page.subtitle }}</span></a><br /><a href="{{ page.pageurl }}" style="color: #aaa">{{ page.title }}</a></h1>
-                        
-        </div>
-    </div><!-- /.header -->
+  {% endif %}
+  <div class="header header_text" style="z-index: 10 !important;">
+    <div class="content">
+      <h1 style="z-index: 11 !important;; position: absolute; bottom: -5px; right: 110px; text-align: right;"><a href="{{ page.subtitleurl }}"><span style="font-size:20px;">{{ page.subtitle }}</span></a><br /><a href="{{ page.pageurl }}">{{ page.title }}</a></h1>
+      <h1 style="z-index: 1 !important; position: absolute; bottom: -6px; right: 110px; text-align: right;"><a href="{{ page.subtitleurl }}" style="color: #aaa"><span style="font-size:20px;">{{ page.subtitle }}</span></a><br /><a href="{{ page.pageurl }}" style="color: #aaa">{{ page.title }}</a></h1>
+      
+    </div>
+  </div><!-- /.header -->
 
   <ul class="navigation">
     <li><a href="http://blog.zzamboni.org/" class="">blog</a></li>
@@ -581,104 +581,55 @@ border: 0;
     <li><a href="http://zzamboni.org/about.html" class="">about</a></li>
   </ul>
 
-              
-<div class="container">
+  
+  <div class="container">
     <div id="posts">
-        
-            
+      <div class="postunit" id="postunit_70279397914600">
+        <div id="post_control_70279397655000"></div>
+        <div class="info-column"></div>
+        <div class="post" id="post_70279397373800">
+          <h2 id="posttitle_70279397043660"><a href="{{ page.pageurl }}">{{ page.posttitle }}</a></h2>
 
-        
-                
-        
-            <div class="postunit" id="postunit_70279397914600">
-                
-
-                <div id="post_control_70279397655000"></div>
-                <div class="info-column">
-                  
-                        
-    
-                </div>
-                <div class="post" id="post_70279397373800">
-                        <h2 id="posttitle_70279397043660"><a href="{{ page.pageurl }}">{{ page.posttitle }}</a></h2>
-                        
-
-                        
-
-                        <div class="post_body">
-{{ content }}
-                        </div>
-
-                        
-                        
-              
-                          <div class="sharing clearfix">
-                            
-                          </div>
-                        
-            
-          
-
-                        
-
-
-                        
-
-
-                        
-                        
-                
-                        
-
-                </div><!-- /.post -->
-                <div class="clear"></div>
-            </div><!-- /.postunit -->
-        
-    
-    
-    
+          <div class="post_body">
+	    {{ content }}
+          </div>
+          <div class="sharing clearfix"></div>
+        </div><!-- /.post -->
+        <div class="clear"></div>
+      </div><!-- /.postunit -->
     </div><!-- /#posts -->
-
     
-{% if sidebar %}
-        <div id="sidebar">
-            
-<div class="sidebar-block">
-<div id="cse" style="width: 100%;">Loading</div>
-<script src="http://www.google.com/jsapi" type="text/javascript"></script>
-<script type="text/javascript">
-  google.load('search', '1', {language : 'en'});
-  google.setOnLoadCallback(function() {
-    var customSearchControl = new google.search.CustomSearchControl('007336107369566601471:0l5f4-m9_jq');
-    customSearchControl.setResultSetSize(google.search.Search.SMALL_RESULTSET);
-    customSearchControl.draw('cse');
-  }, true);
-</script>
-</div>
+    {% if sidebar %}
+    <div id="sidebar">
+      
+      <div class="sidebar-block">
+	<div id="cse" style="width: 100%;">Loading</div>
+	<script src="http://www.google.com/jsapi" type="text/javascript"></script>
+	<script type="text/javascript">
+	  google.load('search', '1', {language : 'en'});
+	  google.setOnLoadCallback(function() {
+	  var customSearchControl = new google.search.CustomSearchControl('007336107369566601471:0l5f4-m9_jq');
+	  customSearchControl.setResultSetSize(google.search.Search.SMALL_RESULTSET);
+	  customSearchControl.draw('cse');
+	  }, true);
+	</script>
+      </div><!-- sidebar-block -->
 
-<div class="sidebar-block">
+      <div class="sidebar-block">
         <a href="http://zzamboni.org/about.html"><img class="left" src="images/avatar.jpg" height="50" alt="" width="50" /></a>
         <div class="about-details">
-            <p><a href="http://zzamboni.org/about.html">Diego Zamboni</a>  <span style="color: #ccc">//</span>  Computer security wonk, Mac addict without a Mac, husband, dad.</p>
+          <p><a href="http://zzamboni.org/about.html">Diego Zamboni</a>  <span style="color: #ccc">//</span>  Computer security wonk, Mac addict without a Mac, husband, dad.</p>
         </div>
-</div><!-- /.content -->
+      </div><!-- sidebar-block -->
 
-                <div class="sidebar-block">
-                    <h5>My Other Sites</h5>
-                    <a href="http://twitter.com/zzamboni" class="ExtTwitterOauth" rel="me"><img src="images/icons/services/twitter.png" width='16' height='16' alt=''/></a>&nbsp; <a href="http://www.linkedin.com/in/zzamboni" class="ExtLinkedIn" rel="me"><img src="images/icons/services/linkedin.png" width='16' height='16' alt=''/></a>&nbsp; <a href="http://flickr.com/photos/zzamboni" class="ExtFlickr" rel="me"><img src="images/icons/services/flickr.png" width='16' height='16' alt=''/></a>&nbsp; <a href="http://vimeo.com/zzamboni/videos" class="ExtVimeo" rel="me"><img src="images/icons/services/vimeo.png" width='16' height='16' alt=''/></a>&nbsp; <a href="http://www.youtube.com/profile?user=zzamboni" class="ExtYoutube" rel="me"><img src="images/icons/services/youtube.png" width='16' height='16' alt=''/></a>&nbsp; <a href="http://delicious.com/zzamboni" class="ExtDelicious" rel="me"><img src="images/icons/services/delicious.png" width='16' height='16' alt=''/></a>&nbsp; <a href="http://scribd.com/zzamboni" class="ExtScribd" rel="me"><img src="images/icons/services/scribd.png" width='16' height='16' alt=''/></a>&nbsp; 
-                </div>
+      <div class="sidebar-block">
+        <h5>My Other Sites</h5>
+        <a href="http://twitter.com/zzamboni" class="ExtTwitterOauth" rel="me"><img src="images/icons/services/twitter.png" width='16' height='16' alt=''/></a>&nbsp; <a href="http://www.linkedin.com/in/zzamboni" class="ExtLinkedIn" rel="me"><img src="images/icons/services/linkedin.png" width='16' height='16' alt=''/></a>&nbsp; <a href="http://flickr.com/photos/zzamboni" class="ExtFlickr" rel="me"><img src="images/icons/services/flickr.png" width='16' height='16' alt=''/></a>&nbsp; <a href="http://vimeo.com/zzamboni/videos" class="ExtVimeo" rel="me"><img src="images/icons/services/vimeo.png" width='16' height='16' alt=''/></a>&nbsp; <a href="http://www.youtube.com/profile?user=zzamboni" class="ExtYoutube" rel="me"><img src="images/icons/services/youtube.png" width='16' height='16' alt=''/></a>&nbsp; <a href="http://delicious.com/zzamboni" class="ExtDelicious" rel="me"><img src="images/icons/services/delicious.png" width='16' height='16' alt=''/></a>&nbsp; <a href="http://scribd.com/zzamboni" class="ExtScribd" rel="me"><img src="images/icons/services/scribd.png" width='16' height='16' alt=''/></a>&nbsp; 
+      </div><!-- sidebar-block -->
 
-                <div class="sidebar-block" style="margin-top:20px;">
-                    
-                </div>
-            
-          
-        </div><!-- /#sidebar -->
-{% endif %}
+    </div><!-- /#sidebar -->
+    {% endif %}
     <div class="clear"></div>
-</div><!-- /.container -->
-
+  </div><!-- /.container -->
+</body>
 </html>
-
-
-
