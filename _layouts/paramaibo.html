@@ -643,7 +643,19 @@ border: 0;
 {% if sidebar %}
         <div id="sidebar">
             
-                
+<div class="sidebar-block">
+<div id="cse" style="width: 100%;">Loading</div>
+<script src="http://www.google.com/jsapi" type="text/javascript"></script>
+<script type="text/javascript">
+  google.load('search', '1', {language : 'en'});
+  google.setOnLoadCallback(function() {
+    var customSearchControl = new google.search.CustomSearchControl('007336107369566601471:0l5f4-m9_jq');
+    customSearchControl.setResultSetSize(google.search.Search.SMALL_RESULTSET);
+    customSearchControl.draw('cse');
+  }, true);
+</script>
+</div>
+
 <div class="sidebar-block">
         <a href="http://zzamboni.org/about.html"><img class="left" src="images/avatar.jpg" height="50" alt="" width="50" /></a>
         <div class="about-details">
