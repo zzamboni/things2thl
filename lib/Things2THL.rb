@@ -48,7 +48,7 @@ module Things2THL
                   {
                     :name => :name,
                   }],
-        :project => [:list,
+        :project => [:list_,
                      {
                        :name => :name,
                        :creation_date => :created_date,
@@ -81,7 +81,7 @@ module Things2THL
                            ]
       },
       :projects_as_tasks => {
-        :area => [:list,
+        :area => [:list_,
                   {
                     :name => :name,
                   }],
@@ -128,11 +128,11 @@ module Things2THL
                            ]
       },
       :projects_areas_as_lists => {
-        :area => [:list,
+        :area => [:list_,
                   {
                     :name => :name,
                   }],
-        :project => [:list,
+        :project => [:list_,
                      {
                        :name => :name,
                        :creation_date => :created_date,
@@ -169,7 +169,7 @@ module Things2THL
     # For some reason some entities in THL use "title", others use "name"
     TITLEPROP = {
       :folder => :name,
-      :list => :name,
+      :list_ => :name,
       :task => :title
     }
 
@@ -299,7 +299,7 @@ module Things2THL
       # Statistics
       @created = {
         :task      => 0,
-        :list      => 0,
+        :list_      => 0,
         :folder    => 0
       }
 
@@ -379,13 +379,13 @@ module Things2THL
       what=props[:new]
       name=(what==:task) ? props[:with_properties][:title] : props[:with_properties][:name]
       parentclass=parent.class_.get
-      unless what == :list || what == :folder || what == :task
-        raise "find_or_create: 'props[:new]' parameter has to be :list, :folder or :task"
+      unless what == :list_ || what == :folder || what == :task
+        raise "find_or_create: 'props[:new]' parameter has to be :list_, :folder or :task"
       end
       puts "parent of #{name} = #{parent}" if $DEBUG
-      if (what == :folder || what == :list) && parentclass != :folder
+      if (what == :folder || what == :list_) && parentclass != :folder
         raise "find_or_create: parent is not a folder, it's a #{parentclass}"
-      elsif what == :task && parentclass != :list && parentclass != :task
+      elsif what == :task && parentclass != :list_ && parentclass != :task
         raise "find_or_create: parent is not a list, it's a #{parentclass}"
       else
         if what == :task
@@ -452,14 +452,14 @@ module Things2THL
                    when 'Trash', 'Today'
                      nil
                    when 'Inbox', 'Next'
-                     simple_find_or_create(:list, focusname, top_level_node)
+                     simple_find_or_create(:list_, focusname, top_level_node)
                    when 'Scheduled', 'Logbook'
-                     simple_find_or_create((thl_node_type(:project) == :task) ? :list : :folder, focusname, top_level_node)
+                     simple_find_or_create((thl_node_type(:project) == :task) ? :list_ : :folder, focusname, top_level_node)
                    when 'Someday'
                      simple_find_or_create(:folder, focusname, top_level_node)
                    when 'Projects'
                      if thl_node_type(:project) == :task
-                       simple_find_or_create(:list, options.projectsfolder || 'Projects', top_level_node)
+                       simple_find_or_create(:list_, options.projectsfolder || 'Projects', top_level_node)
                      else
                        if options.projectsfolder
                          simple_find_or_create(:folder, options.projectsfolder, top_level_node)
@@ -479,12 +479,12 @@ module Things2THL
                    when 'Next'
                      top_level_node
                    when 'Scheduled', 'Logbook'
-                     simple_find_or_create((thl_node_type(:project) == :task) ? :list : :folder, focusname, top_level_node)
+                     simple_find_or_create((thl_node_type(:project) == :task) ? :list_ : :folder, focusname, top_level_node)
                    when 'Someday'
                      simple_find_or_create(:folder, focusname, top_level_node)
                    when 'Projects'
                      if thl_node_type(:project) == :task
-                       simple_find_or_create(:list, options.projectsfolder || 'Projects', top_level_node)
+                       simple_find_or_create(:list_, options.projectsfolder || 'Projects', top_level_node)
                      else
                        if options.projectsfolder
                          simple_find_or_create(:folder, options.projectsfolder, top_level_node)
@@ -588,9 +588,9 @@ module Things2THL
       # so if the container is a folder, we have to create a list to hold the task
       if container && (container.class_.get == :folder) && (thl_node_type(node) == :task)
         if node.type == :project
-          simple_find_or_create(:list, options.projectsfolder || 'Projects', container)
+          simple_find_or_create(:list_, options.projectsfolder || 'Projects', container)
         else
-          simple_find_or_create(:list, loose_tasks_name(container), container)
+          simple_find_or_create(:list_, loose_tasks_name(container), container)
         end
       else
         container
@@ -660,8 +660,8 @@ module Things2THL
 
     # Get all the focus names
     def get_focusnames(all=false)
-      # Get only top-level items of type :list (areas are also there, but with type :area) unless all==true
-      @cached_focusnames||=things.lists.get.select {|l| all || l.class_.get == :list }.map { |focus| focus.name.get }
+      # Get only top-level items of type :list_ (areas are also there, but with type :area) unless all==true
+      @cached_focusnames||=things.lists.get.select {|l| all || l.class_.get == :list_ }.map { |focus| focus.name.get }
     end
 
     # Create the focus caches
@@ -861,7 +861,7 @@ module Things2THL
       if (node.type != :area)
         # If the node has notes but the THL node is a list, add the notes as a task in there
         # If the node has notes but the THL node is a folder (this shouldn't happen), print a warning
-        if node.notes? && new_node_type == :list
+        if node.notes? && new_node_type == :list_
           newnode = {
             :new => :task,
             :with_properties => { :title => "Notes for '#{prop[:name]}'", :notes => convert_notes(node.notes) }}
@@ -887,7 +887,7 @@ module Things2THL
     # to represent its due date, since lists in THL cannot have due dates.
     def add_project_duedate(node, prop)
       new_node_type = thl_node_type(node)
-      return unless node.type == :project && new_node_type == :list && node.due_date?
+      return unless node.type == :project && new_node_type == :list_ && node.due_date?
 
       # Create the new node
       newnode = {
