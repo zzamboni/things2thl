@@ -10,7 +10,7 @@ forkme: true
 forkmeurl: http://github.com/zzamboni/things2thl
 sidebar: false
 ---
-{% assign version='0.8.4' %}
+{% assign version='0.8.5' %}
     <div class="download">
       <p align="center"><b>Download version {{ version}}</b></p>
       <a href="http://github.com/zzamboni/things2thl/zipball/v{{ version }}">
@@ -40,11 +40,15 @@ sidebar: false
 	<pre>$ sudo gem install zzamboni-things2thl --source http://gems.github.com/</pre>
       </p>
 
-      <p>Note: things2thl need
+      <p>Note: things2thl needs
       the <a href="http://appscript.sourceforge.net/rb-appscript/">rb-appscript</a>
       and <a href="http://wiki.github.com/why/hpricot">hpricot</a>
       libraries. If you don't have them already, they will be
       automatically installed by gem.</p>
+
+      <p>If you have a version of THL prior to 0.9.3.22beta, please
+      use things2thl 0.8.4, since there were some changes in the names
+      of the classes used internally by THL.</p>
 
       <h2>Usage</h2>
 
@@ -153,9 +157,8 @@ Options you should seldom need:
       <h2>Download</h2>
 
       <p>
-	You can download the source code for this project in either
-	<a href="http://github.com/zzamboni/things2thl/zipball/master">zip</a> or
-	<a href="http://github.com/zzamboni/things2thl/tarball/master">tar</a> formats.
+	You can download the source code for this project from the
+	links at the top of the page.
       </p>
       <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
 	by running:
