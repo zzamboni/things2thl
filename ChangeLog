@@ -1,3 +1,11 @@
+2010-10-06  Diego Zamboni <diego@zzamboni.org>
+
+        * VERSION: Version bump to 0.8.5
+	* lib/Things2THL.rb: Merged changes by Michael Granger
+	  (ged@github), to change the name of the list class from
+	  :list to :list_, which changed at some point in recent
+	  versions of THL.
+
 2009-06-12  Diego Zamboni <diego@zzamboni.org>
 
         * VERSION: Version bump to 0.8.4

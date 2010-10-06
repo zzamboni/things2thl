@@ -1,5 +1,5 @@
-Things2THL 0.8.4
-http://zzamboni.github.com/things2thl/
+Things2THL 0.8.5
+http://zzamboni.org/things2thl/
 
 Conversion program to transfer data from Things
 (http://culturedcode.com/things/ ) to The Hit List
@@ -22,6 +22,9 @@ Note: things2thl need the rb-appscript
 (http://wiki.github.com/why/hpricot) . If you don't have them already,
 they will be automatically installed by gem.
 
+If you have a version of THL prior to 0.9.3.22beta, please use
+things2thl 0.8.4, since there were some changes in the names of the
+classes used internally by THL.
 
 
 USAGE:
