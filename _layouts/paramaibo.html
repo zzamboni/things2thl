@@ -67,9 +67,9 @@ img {
 }
 body {
     background: #fff;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: constantia, 'hoefler text', 'palatino linotype', serif;
     color: #444;
-    font-size: 12px;
+    font-size: 16px;
 }
 a {
     color: {{ accent }};
@@ -110,8 +110,8 @@ a.reverse:hover {
     position: relative;
 }
 
-h1,h2,.about-details,.date {
-    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Arial,Helvetica,sans-serif;
+h1,h2,h3,.about-details,.date {
+font-family: 'gill sans', 'gill sans mt', 'gill sans mt pro', 'century gothic', corbel, sans-serif;
 }
 .date {
     font-weight: 300;
@@ -129,7 +129,7 @@ h1 a {
 }
 
 h2 {
-    font-size: 22px;
+    font-size: 24px;
     line-height: 28px;
     font-weight: bold;
 }
@@ -142,6 +142,12 @@ h2 a {
 h2 a:hover {
     color: #333;
     text-decoration: none;
+}
+
+h3 {
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: bold;
 }
 
 .post_body { margin-top: 15px; }
@@ -536,13 +542,16 @@ div.profile_ajax_reply { padding-left: 20px; }
 
 ul.navigation { margin: 20px auto; width: 500px; position: relative; left: -50px; }
 ul.navigation li { list-style: none; display: inline; padding-right: 20px; }
-ul.navigation li a { font-size: 17px; }
+ul.navigation li a { font-family: 'gill sans', 'gill sans mt', 'gill sans mt pro', 'century gothic', corbel, sans-serif;
+font-size: 17px; }
 ul.navigation li a.current { color: #444; font-weight: bold; }
 
 .sharing { padding: 5px 5px 5px 0; }
 
     .download { float: right; text-align: center; }
-		pre { background: #000; color: #fff; padding: 15px;}
+pre { font-family: consolas, 'deja vu sans mono', 'lucida sans typewriter', monaco, monospace;
+font-size: 14px;
+background: #000; color: #fff; padding: 15px;}
     pre a { color: #fff; }
     .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
     .footer { text-align:center; padding-top:30px; font-style: italic; }
@@ -578,11 +587,11 @@ a.color-button:hover{text-decoration:none;background:#B91818;background:-webkit-
   </div><!-- /.header -->
 
   <ul class="navigation">
-    <li><a href="http://blog.zzamboni.org/" class="">blog</a></li>
-    <li><a href="http://posterous.zzamboni.org/" class="">zznippets</a></li>
-    <li><a href="http://zzamboni.org/code.html" class="">code</a></li>
-    <li><a href="http://blog.zzamboni.org/tag/cfengine" class="">cfengine</a></li>
-    <li><a href="http://zzamboni.org/about.html" class="">about</a></li>
+    <li><a href="http://blog.zzamboni.org/" class="{% if page.navsection == 'blog' %}current{% endif %}">blog</a></li>
+    <li><a href="http://posterous.zzamboni.org/" class="{% if page.navsection == 'zznippets' %}current{% endif %}">zznippets</a></li>
+    <li><a href="http://zzamboni.org/code.html" class="{% if page.navsection == 'code' %}current{% endif %}">code</a></li>
+    <li><a href="http://blog.zzamboni.org/tag/cfengine" class="{% if page.navsection == 'cfengine' %}current{% endif %}">cfengine</a></li>
+    <li><a href="http://zzamboni.org/about.html" class="{% if page.navsection == 'about' %}current{% endif %}">about</a></li>
   </ul>
 
   
