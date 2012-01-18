@@ -1,0 +1,623 @@
+/*
+ * zzamboni.org CSS stylesheet
+ *
+ * Heavily based (almost identical) to the Paramaibo theme from posterous.com.
+ * Font selections taken from the Erudite Wordpress theme: http://somadesign.ca/projects/the-erudite/
+ * Rounded gradient buttons taken from the github.com home page: http://github.com/
+ *
+ * Put together and modified by Diego Zamboni, http://zzamboni.org/
+ *
+*/
+* {
+    margin: 0;
+    padding: 0;
+}
+img {
+    border: 0;
+}
+.clear {
+    clear: both;
+    font-size: 0;
+}
+.left {
+    float: left;
+}
+.right {
+    float: right;
+}
+.text-right {
+    text-align: right;
+}
+.center {
+    text-align: center;
+}
+.xxsmall {
+    font-size: 10px;
+}
+.xsmall {
+    font-size: 11px;
+}
+.small {
+    font-size: 12px;
+}
+.normal {
+    font-size: 14px;
+}
+.big {
+    font-size: 16px;
+}
+.black {
+    color: #000;
+}
+.strong {
+    font-weight: bold;
+}
+.float {
+    float: left;
+}
+.right {
+    float: right;
+}
+.uppercase {
+    text-transform: uppercase;
+}
+.absolute-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+body {
+    background: #fff;
+    font-family: constantia, 'hoefler text', 'palatino linotype', serif;
+    color: #444;
+    font-size: 16px;
+}
+a {
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+a.reverse {
+    text-decoration: underline;
+}
+a.reverse:hover {
+    text-decoration: none;
+}
+.no-ul {
+    text-decoration: none
+}
+.no-ul:hover {
+    text-decoration: underline !important
+}
+
+.container {
+    margin: 0 auto;
+    width: 960px;
+}
+.header {
+    color: #fff;
+    overflow: visible;
+    z-index: 10;
+    text-align: center;
+}
+.header_text, .header_text .content { height: 100px; }
+.header .content {
+    width: 500px;
+    margin: 0 auto;
+    padding-right: 100px;
+    position: relative;
+}
+
+h1,h2,h3,.about-details,.date {
+font-family: 'gill sans', 'gill sans mt', 'gill sans mt pro', 'century gothic', corbel, sans-serif;
+}
+.date {
+    font-weight: 300;
+}
+
+h1 {
+    font-size: 36px;
+    text-align: right;
+    line-height: 36px;
+}
+
+h1 a {
+    color: #fff;
+    text-decoration: none;
+}
+
+h2 {
+    font-size: 24px;
+    line-height: 28px;
+    font-weight: bold;
+}
+
+h2 a {
+    text-decoration: none;
+}
+
+h2 a:hover {
+    color: #333;
+    text-decoration: none;
+}
+
+h3 {
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: bold;
+}
+
+.post_body { margin-top: 15px; }
+
+h4 {
+    color: #555;
+}
+
+.about {
+    left: -50px;
+    margin: 28px auto 5px;
+    position: relative;
+    overflow: hidden;    
+    width: 500px;
+}
+
+.about-details {
+    line-height: 1.1em;
+    margin-left: 70px;
+    margin-top: -10px;
+}
+
+.about-details p {
+    color: #444;
+    font-size: 14px;
+    margin: 10px 0px;
+}
+
+#posts {
+    float: left;
+}
+
+
+.postunit {
+    padding: 20px 0px;
+    margin: 5px 0px;
+    position: relative;
+}
+
+.info-column {
+    color: #444;
+    float: left;
+    font-size: 14px;
+    text-align: right;
+    width: 180px;
+    margin-top: 1px;
+}
+
+.date {
+    margin: 5px 20px 0 0;
+}
+.date-day {
+    color: #444;
+    font-weight: bold;
+}
+
+.post {
+    float: right;
+    position: relative;
+}
+
+.post p, .post div {
+    line-height: 1.5em;
+}
+
+.post p {
+    margin: 15px 0px;
+}
+.post ol { margin: 15px 0px 15px 20px;}
+.post ul { margin: 15px 0px 15px 15px;}
+
+.galleryLabel {
+    color: #676767;
+}
+
+
+.tagsbar {
+    font-size: 11px;
+    line-height: 14px;
+    color: #aaa;
+    margin-top: 15px
+}
+
+.infobar .location {
+    display: block !important;
+    font-size: 11px;
+    float: left;
+}
+
+.infobar .details {
+    float: right;
+    font-size: 10px;
+    margin-top: 1px;
+}
+
+.date-comments {
+    padding-left: 10px;
+}
+
+.infobar a.timestamp,.infobar .comments-quantity {
+    color: #999;
+    font-size: 10px;
+}
+
+.comment-area {
+    clear: left;
+}
+
+.infobar .comment_list {
+    display: inline !important;
+}
+
+.comment,.commentunit {
+    color: #444;
+    margin-top: 5px;
+}
+
+.commentunit {
+    width: auto !important;
+}
+
+.commentname a {
+    text-decoration: none !important;
+}
+
+.commentname a:hover {
+    text-decoration: underline !important;
+}
+
+.comment h4 {
+    margin: 0 !important;
+}
+
+
+.comment ul.mini_commands {
+    clear: both;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    text-align: right;
+    top: 0;
+}
+
+.comment ul.mini_commands li {
+    margin: 0px 5px 0px 0px;
+}
+
+
+.comment_value label {
+    margin-right: 10px;
+}
+.comment_value br {
+    display: none;
+}
+
+.comment_value input[type='submit'] {
+    margin: 10px 0px;
+}
+
+.comment_none_yet_msg {
+    color: #888;
+    font-size: 11px;
+    font-weight: normal;
+    margin-top: 5px;
+}
+
+.infobar .details a {
+    text-decoration: none;
+}
+
+.infobar .details a:hover {
+    text-decoration: underline;
+}
+
+.location-map {
+    margin-top: 5px;
+    padding: 8px;
+    border: 1px solid #eee;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.map {
+    float: left;
+    height: 150px;
+    width: 300px;
+}
+
+.location-details {
+    color: #676767;
+    float: right;
+    width: 175px
+}
+
+p.private-post {
+    margin: 10px 20px 0px 0px;
+}
+.private-post a.tooltip_link:hover span {
+    color: #555;
+    right: 0px; width: 110px;
+}
+
+.private-post a.tooltip_link:hover span b {
+    color: #555;
+}
+
+.search-section, .tag-section {
+    margin-left: 160px;
+    padding: 20px 20px 5px 20px;
+}
+.search-section h2, .tag-section h2 {
+    color: #444;
+    font-size: 16px;
+}
+
+.pagination {
+    color: #676767;
+    margin: 0 0 50px 180px;
+}
+
+.pagination span {
+    position: relative;
+    top: 2px;
+}
+
+.pagination a {
+    color: #fff;
+    display: inline-block;
+    display: -moz-inline-box;
+    padding: 1px 6px;
+}
+
+.pagination a:hover {
+    background: #555;
+    border: solid 1px #555;
+    color: #ddd;
+    text-decoration: none;
+}
+
+.pagination .disabled {
+    color: #676767;
+}
+
+.pagination .current {
+    color: #676767;
+    font-weight: bold;
+    padding: 0 3px;
+}
+
+
+#sidebar {
+    float: right;
+    width: 230px;
+    margin-top: 30px;
+}
+
+.sidebar-block {
+    margin-bottom: 30px;
+}
+
+h5 {
+    font-size: 11px;
+    font-weight: bold;
+    padding-bottom: 3px;
+    text-transform: uppercase;
+}
+
+.tags {
+    width: 230px;
+}
+
+.tag {
+    margin: 0;
+    padding-top: 7px;
+}
+
+#more-tags-listing ul {
+    margin: 0;
+}
+
+.tag li,#more-tags-listing li,.taglist li {
+    font-size: 10px;
+    list-style: none;
+    margin: 0;
+    vertical-align: top;
+}
+
+.taglist ul {
+    margin: 0 !important;
+}
+
+.tag li a,#more-tags-listing li a,.taglist li a {
+    color: #818181;
+    display: inline-block;
+    font-size: 12px;
+    margin-bottom: 7px;
+    text-decoration: none;
+}
+
+.tag li a:hover,#more-tags-listing li a:hover,.taglist li a:hover {
+    text-decoration: underline;
+}
+
+a.more-tags {
+    font-size: 10px !important;
+    text-decoration: none;
+}
+
+a.more-tags:hover {
+    text-decoration: underline;
+}
+
+li.tag_item_selected {
+    color: #333;
+    font-size: 12px;
+    padding-bottom: 7px;
+}
+
+.search {
+    background: url(/themes/search-light.gif) no-repeat 3px 2px #fff;
+    border: solid 1px #e5e5e5;
+    color: #aaa;
+    font-size: 11px;
+    margin-bottom: 2px;
+    padding: 5px 7px 5px 20px;
+    width: 153px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+}
+
+.search:focus {
+    color: #333;
+}
+
+
+.contributors, .fans {
+    margin: 10px 0;
+}
+ul.contribs li, ul.contribs li a, ul.fans li, ul.fans li a {
+    font-size: 11px;
+    color: #666;
+    list-style: none;
+}
+ul.contribs li img, ul.fans li img {
+    vertical-align: middle;
+}
+
+#subscribe_div {
+    margin-bottom: 3px;
+}
+
+.subscribe-link {
+    color: #666;
+    font-size: 11px;
+    padding-left: 20px;
+    line-height: 20px; 
+    position: relative;
+    top: -2px;
+
+}
+.postunit:hover .editbox {
+    visibility: visible;
+}
+.posted_by {
+    font-size: 10px;
+    margin: 5px 0px 20px 0px; <!--  -->
+    color: #888;
+}
+.posted_by a {
+    color: #999;
+}
+
+.metricLabel { font-size: 10px; color: #aaa; }
+.metricValue { font-size: 10px; color: #444; font-weight: bold; }
+div.profile_ajax_reply { padding-left: 20px; }
+
+ul.navigation { margin: 20px auto; width: 500px; position: relative; left: -50px; }
+ul.navigation li { list-style: none; display: inline; padding-right: 20px; }
+ul.navigation li a { font-family: 'gill sans', 'gill sans mt', 'gill sans mt pro', 'century gothic', corbel, sans-serif;
+font-size: 17px; }
+ul.navigation li a.current { color: #444; font-weight: bold; }
+
+.sharing { padding: 5px 5px 5px 0; }
+
+    .download { float: right; text-align: center; }
+pre { font-family: consolas, 'deja vu sans mono', 'lucida sans typewriter', monaco, monospace;
+font-size: 14px;
+background: #000; color: #fff; padding: 15px;}
+    pre a { color: #fff; }
+    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
+    .footer { text-align:center; padding-top:30px; font-style: italic; }
+..colwrapper{
+border: 1px;
+padding: 0px;
+width: 50%;
+}
+div.colwrapper ul li {
+float: left;
+width: 50%;
+margin: 0;
+padding: 0;
+border: 0;
+}
+.color-button{margin: 10px; text-align:center;display:inline-block;padding:15px 30px;color:#D09797;text-shadow:-1px -1px 0 rgba(0,0,0,0.25);font-size:12px;background:#640404;filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#BE2525',endColorstr='#640404');background:-webkit-gradient(linear,left top,left bottom,from(#BE2525),to(#640404));background:-moz-linear-gradient(top,#BE2525,#640404);border:1px solid #490707;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px;-webkit-box-shadow:0 1px 4px rgba(0,0,0,0.3);-moz-box-shadow:0 1px 4px rgba(0,0,0,0.3);box-shadow:0 1px 4px rgba(0,0,0,0.3);-webkit-font-smoothing:antialiased;}
+a.color-button:hover{text-decoration:none;background:#B91818;background:-webkit-gradient(linear,0% 0,0% 100%,from(#DA4D4D),to(#B91818));background:-moz-linear-gradient(-90deg,#DA4D4D,#B91818);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#DA4D4D',endColorstr='#B91818');}
+.color-button strong{display:block;color:#fff;font-size:20px;font-family: 'gill sans', 'gill sans mt', 'gill sans mt pro', 'century gothic', corbel, sans-serif;}
+.color-button em{font-weight:bold;font-style:normal;color:#FD7E7E;}
+
+/* From http://technology.posterous.com/make-css3-buttons-that-are-extremely-fancy */
+a.fancy_button, button.fancy_button { 
+  background: #555; 
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,0.4)), to(rgba(77,77,77,0.4)));  
+  background: -moz-linear-gradient(top, rgba(0,0,0,0.4), rgba(77,77,77,0.4)); 
+  float: left;
+  padding: 4px; 
+  text-decoration: none; 
+  outline: 0; 
+  border-width: 1px; 
+  border-style: solid;
+  margin: 10px; 
+  width: auto;
+  overflow: visible;
+  border-color: transparent transparent #666 transparent; 
+  border-color: transparent transparent rgba(202,202,202,0.27) transparent;
+  -webkit-border-radius: 12px; -moz-border-radius: 12px; border-radius: 12px;
+  -webkit-background-clip: padding-box;
+}
+
+a.fancy_button span, button.fancy_button span { 
+  display: block; 
+  float: left;
+  border-width: 1px; 
+  border-style: solid; 
+  border-color: #ccc #444 #111 #444; 
+  border-color: rgba(255,255,255,0.7) rgba(0,0,0,0.5) rgba(0,0,0,0.7) rgba(0,0,0,0.5); 
+  font-size: 16px;
+  color:#D09797;
+  padding: 0.48em 2em; 
+  cursor: pointer; 
+  text-shadow: rgba(0,0,0,0.45) 0 -1px 0; 
+  -webkit-box-shadow: rgba(0,0,0,0.75) 0px 0px 3px; -moz-box-shadow: rgba(0,0,0,0.75) 0px 0px 3px; box-shadow: rgba(0,0,0,0.75) 0px 0px 3px;
+  -webkit-border-radius: 7px; -moz-border-radius: 7px; border-radius: 7px;
+  background: transparent -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.6)), color-stop(0.5, rgba(255,255,255,0.15)), color-stop(0.5, rgba(255,255,255,0.01)), to(transparent)); 
+  background: transparent -moz-linear-gradient(top, rgba(255,255,255,0.6), rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.01) 50%, transparent);
+  filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorstr='#80FFFFFF', EndColorstr='#00FFFFFF'); 
+  -webkit-background-clip: padding-box;
+}
+
+a.fancy_button:hover span, button.fancy_button:hover span {  
+  border-top-color: rgba(255,255,255,0.65); 
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(220,220,220,0.6)), color-stop(0.5, rgba(100,100,100,0.2)), color-stop(0.5, rgba(0,0,0,0.21)), to(rgba(0, 0, 0, 0.20))); 
+  background: -moz-linear-gradient(top, rgba(220,220,220,0.6), rgba(100,100,100,0.2) 50%, rgba(0,0,0,0.21) 50%, rgba(0, 0, 0, 0.20));
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, StartColorStr='#99dcdcdc', EndColorStr='#33000000'); 
+  -webkit-background-clip: padding-box;
+}
+
+a.fancy_button:active span, button.fancy_button:active span {  
+  border-top-color: rgba(255,255,255,0.2); 
+  border-left-color: rgba(0,0,0,0.4); 
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(150,150,150,0.6)), color-stop(0.5, rgba(60,60,60,0.6)), color-stop(0.5, rgba(40,40,40,0.6)), to(rgba(20, 20, 20, 0.5))); 
+  background: -moz-linear-gradient(top, rgba(150,150,150,0.6), rgba(60,60,60,0.6) 50%, rgba(40,40,40,0.6) 50%, rgba(20, 20, 20, 0.5));
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, StartColorStr='#80969696', EndColorStr='#59000000'); 
+  -webkit-box-shadow: inset 0 0 18px rgba(0,0,0,0.75), rgba(0,0,0,0.75) 0px 0px 3px; -moz-box-shadow: inset 0 0 18px rgba(0,0,0,0.75), rgba(0,0,0,0.75) 0px 0px 3px; box-shadow: inset 0 0 18px rgba(0,0,0,0.75), rgba(0,0,0,0.75) 0px 0px 3px; 
+  -webkit-background-clip: padding-box;
+}
+
+a.fancy_button span:active, button.fancy_button span:active { 
+  border-top-color: rgba(255,255,255,0.2); 
+  border-left-color: rgba(0,0,0,0.4); 
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, StartColorStr='#80969696', EndColorStr='#59000000'); 
+  -webkit-background-clip: padding-box;
+}
+.fancy_button strong{display:block;color:#fff;font-size:21px;font-family: 'gill sans', 'gill sans mt', 'gill sans mt pro', 'century gothic', corbel, sans-serif;}
+.fancy_button em{font-weight:bold;font-style:normal;color:#FD7E7E;}

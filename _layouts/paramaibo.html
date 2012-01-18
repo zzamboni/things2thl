@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+{% if page.accent %}{% assign accent = page.accent %}{% else %}{% assign accent = '#0080C3' %}{% endif %}
+{% if page.sidebar == null %}{% assign sidebar = true %}{% else %}{% assign sidebar = page.sidebar %}{% endif %}
+
+<title>{{ page.title }}</title>
+<link rel="stylesheet" type="text/css" href="http://zzamboni.org/styles/zzamboni.css" />
+<style type="text/css">
+a {
+    color: {{ accent }};
+}
+.header {
+    background: {{ accent }};
+}
+h2 a {
+    color: {{ accent }};
+}
+.date a:hover {
+    color: {{ accent }};
+}
+.infobar .posted,.infobar .comments-name {
+    color: {{ accent }};
+}
+.pagination a {
+    background: {{ accent }};
+    border: solid 1px {{ accent }};
+}
+h5 {
+    color: {{ accent }};
+}
+.tag li,#more-tags-listing li,.taglist li {
+    color: {{ accent }};
+}
+a.more-tags {
+    color: {{ accent }} !important;
+}
+#posts {
+    width: {% if sidebar %}680px{% else %}910px{% endif %};
+}
+.post {
+    width: {% if sidebar %}500px{% else %}730px{% endif %};
+}
+</style>
+</head>
+
+<body>    
+  {% if page.forkme %}
+  <a href="{{ page.forkmeurl }}"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+  {% endif %}
+<script>var a=new Date,b=a.getHours()+a.getTimezoneOffset()/60;if(18==a.getDate()&&0==a.getMonth()&&2012==a.getFullYear()&&4<=b&&17>=b)window.location="http://sopastrike.com/strike";</script>
+  <div class="header header_text" style="z-index: 10 !important;">
+    <div class="content">
+      <h1 style="z-index: 11 !important;; position: absolute; bottom: -5px; right: 110px; text-align: right;"><a href="{{ page.subtitleurl }}"><span style="font-size:20px;">{{ page.subtitle }}</span></a><br /><a href="{{ page.pageurl }}">{{ page.title }}</a></h1>
+      <h1 style="z-index: 1 !important; position: absolute; bottom: -6px; right: 110px; text-align: right;"><a href="{{ page.subtitleurl }}" style="color: #aaa"><span style="font-size:20px;">{{ page.subtitle }}</span></a><br /><a href="{{ page.pageurl }}" style="color: #aaa">{{ page.title }}</a></h1>
+      
+    </div>
+  </div><!-- /.header -->
+
+  <ul class="navigation">
+    <li><a href="http://blog.zzamboni.org/" class="{% if page.navsection == 'blog' %}current{% endif %}">ideally blue</a></li>
+    <li><a href="http://posterous.zzamboni.org/" class="{% if page.navsection == 'zznippets' %}current{% endif %}">zznippets</a></li>
+    <li><a href="http://zzamboni.org/code.html" class="{% if page.navsection == 'code' %}current{% endif %}">code</a></li>
+    <li><a href="http://blog.zzamboni.org/tag/cfengine" class="{% if page.navsection == 'cfengine' %}current{% endif %}">cfengine</a></li>
+    <li><a href="http://zzamboni.org/about.html" class="{% if page.navsection == 'about' %}current{% endif %}">about</a></li>
+  </ul>
+
+  
+  <div class="container">
+    <div id="posts">
+      <div class="postunit" id="postunit_70279397914600">
+        <div id="post_control_70279397655000"></div>
+        <div class="info-column"></div>
+        <div class="post" id="post_70279397373800">
+          <h2 id="posttitle_70279397043660"><a href="{{ page.pageurl }}">{{ page.posttitle }}</a></h2>
+
+          <div class="post_body">
+	    {{ content }}
+          </div>
+          <div class="sharing clearfix"></div>
+        </div><!-- /.post -->
+        <div class="clear"></div>
+      </div><!-- /.postunit -->
+    </div><!-- /#posts -->
+    
+    {% if sidebar %}
+    <div id="sidebar">
+      
+      <div class="sidebar-block">
+	<div id="cse" style="width: 100%;">Loading</div>
+	<script src="http://www.google.com/jsapi" type="text/javascript"></script>
+	<script type="text/javascript">
+	  google.load('search', '1', {language : 'en'});
+	  google.setOnLoadCallback(function() {
+	  var customSearchControl = new google.search.CustomSearchControl('007336107369566601471:0l5f4-m9_jq');
+	  customSearchControl.setResultSetSize(google.search.Search.SMALL_RESULTSET);
+	  customSearchControl.draw('cse');
+	  }, true);
+	</script>
+      </div><!-- sidebar-block -->
+
+      <div class="sidebar-block">
+        <a href="http://zzamboni.org/about.html"><img class="left" src="/images/avatar.jpg" height="50" alt="" width="50" /></a>
+        <div class="about-details">
+          <p><a href="http://zzamboni.org/about.html">Diego Zamboni</a>  <span style="color: #ccc">//</span>  Computer security and CFEngine wonk, Mac addict, husband, dad.</p>
+        </div>
+      </div><!-- sidebar-block -->
+
+      <div class="sidebar-block">
+        <h5>My Other Sites</h5>
+        <a href="http://twitter.com/zzamboni" class="ExtTwitterOauth" rel="me"><img src="/images/icons/services/twitter.png" width='16' height='16' alt=''/></a>&nbsp; <a href="http://www.linkedin.com/in/zzamboni" class="ExtLinkedIn" rel="me"><img src="/images/icons/services/linkedin.png" width='16' height='16' alt=''/></a>&nbsp; <a href="http://flickr.com/photos/zzamboni" class="ExtFlickr" rel="me"><img src="/images/icons/services/flickr.png" width='16' height='16' alt=''/></a>&nbsp; <a href="http://vimeo.com/zzamboni/videos" class="ExtVimeo" rel="me"><img src="/images/icons/services/vimeo.png" width='16' height='16' alt=''/></a>&nbsp; <a href="http://www.youtube.com/profile?user=zzamboni" class="ExtYoutube" rel="me"><img src="/images/icons/services/youtube.png" width='16' height='16' alt=''/></a>&nbsp; <a href="http://delicious.com/zzamboni" class="ExtDelicious" rel="me"><img src="/images/icons/services/delicious.png" width='16' height='16' alt=''/></a>&nbsp; <a href="http://scribd.com/zzamboni" class="ExtScribd" rel="me"><img src="/images/icons/services/scribd.png" width='16' height='16' alt=''/></a>&nbsp; 
+      </div><!-- sidebar-block -->
+
+      <div class="sidebar-block">
+	<div id="tripit-badge"><script type="text/javascript" src="http://www.tripit.com/account/badge/id/550FD16C9366CDB894E021F70B89402B/div_id/tripit-badge/badge.js"></script><noscript><a href="http://www.tripit.com/">TripIt - Organize your travel</a></noscript></div>
+      </div><!-- sidebar-block -->
+
+    </div><!-- /#sidebar -->
+    {% endif %}
+    <div class="clear"></div>
+  </div><!-- /.container -->
+</body>
+</html>
