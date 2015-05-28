@@ -5,8 +5,9 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gemspec|
     gemspec.name = "things2thl"
-    gemspec.summary = "Library and command-line tool for migrating Things data to The Hit List"
+    gemspec.summary = "Migrating Things data to The Hit List"
     gemspec.email = "diego@zzamboni.org"
+    gemspec.license = "MIT"
     gemspec.homepage = "http://zzamboni.org/things2thl/"
     gemspec.description = "Library and command-line tool for migrating Things data to The Hit List"
     gemspec.authors = ["Diego Zamboni"]
